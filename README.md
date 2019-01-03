@@ -11,10 +11,10 @@ düzenleyebilirsiniz.
 Bu betik, sadece GNU/Linux dağıtımlarında kullanılabilir. Windows sistemlerde
 bash betiklerini çalıştırabilmek mümkünmüş fakat benim test etme imkanım olmadı.
 
-Bu betik ile ilgili detaylı blog yazısını için tıklayın. Ayrıca programlama
-alanında bilgili biri değilseniz ve bir siteye rastlayarak buraya geldiyseniz de
-blog yazımdan devam etmenizi öneririm. Orada programlamadan anlamayan kişiler
-için daha açıklayıcı olacak şekilde yazdım.
+[Bu betik ile ilgili detaylı blog yazısını için tıklayın.](https://wp.me/p14nDk-oF)
+Ayrıca programlama alanında bilgili biri değilseniz ve bir sitede rastlayarak
+buraya geldiyseniz de blog yazımdan devam etmenizi öneririm. Orada programlamadan
+anlamayan kişiler için daha açıklayıcı olacak şekilde yazdım.
 
 ## Motivasyonum
 
