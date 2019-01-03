@@ -73,7 +73,15 @@ Argümanlar:
   -v, --versiyon            Betiğin versiyon numarasını yazdırır.
 
 Lisans:
-  GNU Genel Kamu Lisansı v3
+  GNU Genel Kamu Lisansı versiyon 3
+
+Hata Raporlama:
+  Betik kodlarıyla ilgili olduğunu düşündüğünüz bir hata alırsanız aşağıdaki
+  bağlantıdan hata bildirimi yapabilirsiniz ya da bana e-posta gönderebilirsiniz.
+  Daha verimli hata çözümleme süreci için mümkünse \`mgm-radar.log\` dosyasını da
+  ekleyiniz.
+
+    https://github.com/erenhatirnaz/mgm-radar/issues/new
 
 Yazar:
   Eren Hatırnaz <erenhatirnaz@hotmail.com.tr> [GPG: 0x8e64942a]
