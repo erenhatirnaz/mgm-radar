@@ -46,7 +46,7 @@ $(versiyon | head -n1)
 T.C. Tarım ve Orman Bakanlığı Meteoroloji Genel Müdürlüğü tarafından sağlanan
 meteorolojik radar görüntülerini indirir ve varsayılan resim görüntüleyiciniz
 ile açar. Varsayılan resim görüntüleyiciniz yerine başka bir görüntüleyici ile
-açmasını istiyorsanız bu betik dosyasındaki 12.satırı düzenleyebilirsiniz.
+açmasını istiyorsanız bu betik dosyasındaki 29.satırı düzenleyebilirsiniz.
 
 Kullanım:
   $(basename "$0") <alt_komut> <argümanlar> [-y|--yardim] [-v|--versiyon]

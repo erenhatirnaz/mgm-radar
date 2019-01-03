@@ -5,7 +5,7 @@
 T.C. Tarım ve Orman Bakanlığı Meteoroloji Genel Müdürlüğü tarafından sağlanan
 meteorolojik radar görüntülerini indiren ve varsayılan resim görüntüleyiciniz
 ile açan bir araç. Varsayılan resim görüntüleyiciniz yerine başka bir resim
-görüntüleyici ile açmak istiyorsanız `mgm-radar.sh` dosyasındaki 27.satırı
+görüntüleyici ile açmak istiyorsanız `mgm-radar.sh` dosyasındaki 29.satırı
 düzenleyebilirsiniz.
 
 Bu betik, sadece GNU/Linux dağıtımlarında kullanılabilir. Windows sistemlerde
