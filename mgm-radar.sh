@@ -228,7 +228,7 @@ hareketli() {
 	fi
 }
 
-mkdir -p /tmp/radar
+mkdir -p /tmp/mgm-radar
 
 # İnternet bağlantısı kontrolü
 if ! ping -c 1 -W 1 8.8.8.8 1>/dev/null 2>"$hata_raporu"; then
