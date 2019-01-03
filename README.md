@@ -1,6 +1,7 @@
 # mgm-radar
 
 > Meteorolojik radar görüntüsü indirme aracı
+
 T.C. Tarım ve Orman Bakanlığı Meteoroloji Genel Müdürlüğü tarafından sağlanan
 meteorolojik radar görüntülerini indiren ve varsayılan resim görüntüleyiciniz
 ile açan bir araç. Varsayılan resim görüntüleyiciniz yerine başka bir resim
@@ -86,7 +87,9 @@ gerekir.**
 GNU Genel Kamu Lisansı versiyon 3
 
 Copyright (C) 2019 Eren Hatırnaz <erenhatirnaz@hotmail.com.tr> [GPG: 0x8e64942a]
+
 Bu bir özgür yazılımdır, ve bazı koşullar altında yeniden dağıtmakta
 serbestsiniz; ayrıntılar için LICENSE dosyasına bakın.
+
 Bu programın KESİNLİKLE HİÇBİR TEMİNATI YOKTUR; ayrıntılar için LICENSE
 dosyasına bakın.
