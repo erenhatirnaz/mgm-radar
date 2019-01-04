@@ -16,7 +16,7 @@
 # adresine bakınız.
 
 readonly betik_ismi="mgm-radar"
-readonly versiyon_numarasi="0.1.0"
+readonly versiyon_numarasi="0.1.1"
 
 readonly betik=$(readlink -f "$0")
 readonly ana_dizin=$(dirname "$betik")
