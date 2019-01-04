@@ -82,6 +82,11 @@ gerekir.**
 
 **NOT:** Birleştirilmiş görüntü için mgm.gov.tr sadece PPI ürünü sunmaktadır.
 
+## Ekran Görüntüleri
+![mgm-radar --yardim](https://erenhatirnaz.files.wordpress.com/2019/01/mgm-radar-3.png)
+![mgm-radar sondurum -i 55 -u ppi](https://erenhatirnaz.files.wordpress.com/2019/01/mgm-radar-1.png)
+![mgm-radar hareketli -i 55 -u ppi](https://erenhatirnaz.files.wordpress.com/2019/01/mgm-radar-2-min.gif)
+
 ## Lisansı
 
 GNU Genel Kamu Lisansı versiyon 3
