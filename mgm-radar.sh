@@ -280,7 +280,7 @@ do
 	esac
 done
 
-DIZIN=${DIZIN:-/tmp/radar/}
+DIZIN=${DIZIN:-/tmp/mgm-radar/}
 if [[ ! "$ALT_KOMUT" =~ (radarlar)$ ]]; then
 	 il_kontrol "$IL_KODU"
 	 urun_kontrol "$URUN"
