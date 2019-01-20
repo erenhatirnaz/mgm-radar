@@ -2,15 +2,15 @@
 
 # mgm-radar.sh
 # Copyright (C) 2019 Eren Hatırnaz <erenhatirnaz@hotmail.com.tr> [GPG: 0x8e64942a]
-
+#
 # Bu program özgür yazılımdır: Özgür Yazılım Vakfı tarafından yayımlanan GNU
 # Genel Kamu Lisansı’nın sürüm 3 ya da (isteğinize bağlı olarak) daha sonraki
 # sürümlerinin hükümleri altında yeniden dağıtabilir ve/veya değiştirebilirsiniz.
-
+#
 # Bu program, yararlı olması umuduyla dağıtılmış olup, programın BİR TEMİNATI
 # YOKTUR; TİCARETİNİN YAPILABİLİRLİĞİNE VE ÖZEL BİR AMAÇ İÇİN UYGUNLUĞUNA dair
 # bir teminat da vermez. Ayrıntılar için GNU Genel Kamu Lisansı’na göz atınız.
-
+#
 # Bu programla birlikte GNU Genel Kamu Lisansı’nın bir kopyasını elde etmiş
 # olmanız gerekir. Eğer elinize ulaşmadıysa <http://www.gnu.org/licenses/>
 # adresine bakınız.
@@ -241,7 +241,7 @@ mkdir -p /tmp/mgm-radar
 
 # İnternet bağlantısı kontrolü
 if ! ping -c 1 -W 1 8.8.8.8 1>/dev/null 2>"$hata_raporu"; then
-  echo "${hata}İnternet bağlantınız ile ilgili bir sorun oluştu." >&2
+	echo "${hata}İnternet bağlantınız ile ilgili bir sorun oluştu." >&2
 	exit 1
 fi
 
@@ -283,9 +283,9 @@ done
 
 DIZIN=${DIZIN:-/tmp/mgm-radar/}
 if [[ ! "$ALT_KOMUT" =~ (radarlar)$ ]]; then
-	 il_kontrol "$IL_KODU"
-	 urun_kontrol "$URUN"
-	 dizin_kontrol "${DIZIN}"
+	il_kontrol "$IL_KODU"
+	urun_kontrol "$URUN"
+	dizin_kontrol "${DIZIN}"
 fi
 
 # mgm.gov.tr 'deki dizin yapısından dolayı dönüştürülüyor
