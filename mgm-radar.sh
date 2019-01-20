@@ -225,7 +225,8 @@ hareketli() {
 
 	echo "Hareketli GIF dosyasına dönüştürülüyor..."
 	gif_dosyasi="${dosya_yolu}.gif"
-	if convert -delay 20 "${dosya_yolu}"{1..15}".jpg" "${gif_dosyasi}" 2>"$hata_raporu"; then
+	if LC_ALL=en_US.UTF convert "${dosya_yolu}"{1..15}".jpg" \
+		 -delay 20 -loop 0 "${gif_dosyasi}" 2>"$hata_raporu"; then
 		echo "${onek}${dosya_yolu}.gif: Radar görüntüleri GIF olarak kaydedildi."
 	else
 		echo "${hata}GIF dosyası oluşturulması sırasında hata oluştu." >&2
