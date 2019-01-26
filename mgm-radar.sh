@@ -69,6 +69,8 @@ Argümanlar:
                             Varsayılan değer: /tmp/radar/. Bu dizine indirilen
                             görüntüler geçiçidir. Kalıcı olması için bir dizin
                             belirtin.
+  -s, --sadece-indir        İndirilen radar görüntülerinin varsayılan resim
+                            görüntüleyiciniz ile açılmasını engeller.
   -y, --yardim              Bu yardım mesajını yazdırır.
   -v, --versiyon            Betiğin versiyon numarasını yazdırır.
 
@@ -257,6 +259,9 @@ fi
 shift
 
 # Argümanların işlenmesi
+SADECE_INDIR=false
+DIZIN="/tmp/mgm-radar/"
+
 while [[ $# -gt 0 ]]
 do
 	case $1 in
@@ -275,13 +280,16 @@ do
 			shift
 			shift
 			;;
+		-s|--sadece-indir)
+			SADECE_INDIR=true
+			shift
+			;;
 		*)
 			shift
 			;;
 	esac
 done
 
-DIZIN=${DIZIN:-/tmp/mgm-radar/}
 if [[ ! "$ALT_KOMUT" =~ ^(radarlar)$ ]]; then
 	il_kontrol "$IL_KODU"
 	urun_kontrol "$URUN"
@@ -303,7 +311,7 @@ fi
 
 $ALT_KOMUT "$IL_KODU" "$URUN" "${DIZIN%%/}"
 
-if [[ ! "$ALT_KOMUT" =~ ^(radarlar)$ ]]; then
+if [[ ! "$ALT_KOMUT" =~ ^(radarlar)$ ]] && ! $SADECE_INDIR; then
 	[[ "$ALT_KOMUT" == "sondurum" ]] && UZANTI="jpg"
 	[[ "$ALT_KOMUT" == "hareketli" ]] && UZANTI="gif"
 
