@@ -168,7 +168,7 @@ urun_kontrol() {
 		exit 1
 	fi
 
-	if [[ ! "$urun" =~ (vil|maks|ppi|ruzgar)$ ]]; then
+	if [[ ! "$urun" =~ ^(vil|maks|ppi|ruzgar)$ ]]; then
 		echo "${onek}${urun}: Geçersiz ürün." >&2
 		exit 1
 	fi
@@ -247,10 +247,10 @@ fi
 
 # -y|--yardim ve -v|--versiyon argümanları için
 ALT_KOMUT=${1:-"--yardim"}
-[[ "$ALT_KOMUT" =~ (-y|--yardim)$ ]] && yardim && exit 0
-[[ "$ALT_KOMUT" =~ (-v|--versiyon)$ ]] && versiyon && exit 0
+[[ "$ALT_KOMUT" =~ ^(-y|--yardim)$ ]] && yardim && exit 0
+[[ "$ALT_KOMUT" =~ ^(-v|--versiyon)$ ]] && versiyon && exit 0
 
-if [[ ! "$ALT_KOMUT" =~ (sondurum|hareketli|radarlar) ]]; then
+if [[ ! "$ALT_KOMUT" =~ ^(sondurum|hareketli|radarlar)$ ]]; then
 	echo "${onek}${ALT_KOMUT}: Geçersiz alt komut." >&2
 	exit 1
 fi
@@ -282,7 +282,7 @@ do
 done
 
 DIZIN=${DIZIN:-/tmp/mgm-radar/}
-if [[ ! "$ALT_KOMUT" =~ (radarlar)$ ]]; then
+if [[ ! "$ALT_KOMUT" =~ ^(radarlar)$ ]]; then
 	il_kontrol "$IL_KODU"
 	urun_kontrol "$URUN"
 	dizin_kontrol "${DIZIN}"
@@ -303,7 +303,7 @@ fi
 
 $ALT_KOMUT "$IL_KODU" "$URUN" "${DIZIN%%/}"
 
-if [[ ! "$ALT_KOMUT" =~ (radarlar)$ ]]; then
+if [[ ! "$ALT_KOMUT" =~ ^(radarlar)$ ]]; then
 	[[ "$ALT_KOMUT" == "sondurum" ]] && UZANTI="jpg"
 	[[ "$ALT_KOMUT" == "hareketli" ]] && UZANTI="gif"
 
