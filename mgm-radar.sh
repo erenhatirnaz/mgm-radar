@@ -24,9 +24,15 @@ readonly hata_raporu="${ana_dizin}/mgm-radar.log"
 readonly baglanti="https://mgm.gov.tr/FTPDATA/uzal/radar"
 
 readonly onek="${betik_ismi}: "
-readonly hata="${onek}${hata_raporu}: "
+readonly hata="${onek}$(basename "$hata_raporu"): "
 
 readonly goruntuleyici="xdg-open"
+
+if [[ "$1" =~ ^(-h|--hata-ayikla)$ ]]; then
+	set -x
+	exec > "${ana_dizin}/hata-ayikla.log" 2>&1
+	shift
+fi
 
 versiyon() {
 	cat << EOF
@@ -49,7 +55,7 @@ ile açar. Varsayılan resim görüntüleyiciniz yerine başka bir görüntüley
 açmasını istiyorsanız bu betik dosyasındaki 29.satırı düzenleyebilirsiniz.
 
 Kullanım:
-  $(basename "$0") <alt_komut> <argümanlar> [-y|--yardim] [-v|--versiyon]
+  $(basename "$0") [-h] <alt_komut> <argümanlar> [-y|--yardim] [-v|--versiyon]
 
 Alt Komutlar:
    sondurum    Sistemdeki son radar görüntüsünü indirir.
@@ -71,6 +77,9 @@ Argümanlar:
                             belirtin.
   -s, --sadece-indir        İndirilen radar görüntülerinin varsayılan resim
                             görüntüleyiciniz ile açılmasını engeller.
+  -h, --hata-ayikla         Hata ayıklama modunu etkinleştirir. Bu mod
+                            etkinleştirildiğinde bütün çıktılar 'mgm-radar.log'
+                            dosyasına yazdırılıyor.
   -y, --yardim              Bu yardım mesajını yazdırır.
   -v, --versiyon            Betiğin versiyon numarasını yazdırır.
 
@@ -80,8 +89,11 @@ Lisans:
 Hata Raporlama:
   Betik kodlarıyla ilgili olduğunu düşündüğünüz bir hata alırsanız aşağıdaki
   bağlantıdan hata bildirimi yapabilirsiniz ya da bana e-posta gönderebilirsiniz.
-  Daha verimli hata çözümleme süreci için mümkünse \`mgm-radar.log\` dosyasını da
-  ekleyiniz.
+  Daha verimli hata çözümleme süreci için mümkünse betiği hata ayıklama modunda
+  çalıştırıp, oluşacak olan 'hata-ayikla.log' dosyasını da hata bildiriminize
+  ekleyiniz. Betiği hata ayıklama modunda çalıştırmak için betik ismi ile alt
+  komut arasına -h ya da --hata-ayikla yazmanız yeterli olacaktır. Örneğin:
+  $ mgm-radar -h sondurum -i 6 -u vil
 
     https://github.com/erenhatirnaz/mgm-radar/issues/new
 
