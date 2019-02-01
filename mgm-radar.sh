@@ -202,7 +202,9 @@ sondurum() {
 	local dizin="$3"
 
 	local il
+	set -e
 	il=$(il_str "$il_kodu")
+	set +e
 	local indirme_baglantisi="${baglanti}/${il}/${il}${urun}15.jpg"
 	local dosya_yolu="${dizin}/${il_kodu}-${urun}.jpg"
 
@@ -220,7 +222,9 @@ hareketli() {
 	local dizin="$3"
 
 	local il
+	set -e
 	il=$(il_str "$il_kodu")
+	set +e
 	local indirme_baglantisi="${baglanti}/${il}/${il}${urun}"
 	local dosya_yolu="${dizin}/${il_kodu}-${urun}"
 
