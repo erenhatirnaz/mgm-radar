@@ -82,6 +82,10 @@ gerekir.**
 
 **NOT:** Birleştirilmiş görüntü için mgm.gov.tr sadece PPI ürünü sunmaktadır.
 
+## Test edilmesi
+Betiğin tüm fonksiyonlarını test etmek için `make test` komutunu
+çalıştırabilirsiniz.
+
 ## Ekran Görüntüleri
 ![mgm-radar --yardim](https://erenhatirnaz.files.wordpress.com/2019/01/mgm-radar-3.png)
 ![mgm-radar sondurum -i 55 -u ppi](https://erenhatirnaz.files.wordpress.com/2019/01/mgm-radar-1.png)
