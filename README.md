@@ -1,4 +1,5 @@
 # mgm-radar
+[![Derlenme durumu](https://travis-ci.org/erenhatirnaz/mgm-radar.svg?branch=master)](https://travis-ci.org/erenhatirnaz/mgm-radar)
 
 > Meteorolojik radar görüntüsü indirme aracı
 
