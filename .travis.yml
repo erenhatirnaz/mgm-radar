@@ -1,0 +1,7 @@
+language: bash
+
+before_install:
+  - sudo apt-get install imagemagick wget
+
+script:
+  - make test

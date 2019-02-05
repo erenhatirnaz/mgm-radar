@@ -16,7 +16,7 @@
 # adresine bakınız.
 
 readonly betik_ismi="mgm-radar"
-readonly versiyon_numarasi="0.1.2"
+readonly versiyon_numarasi="0.2.0"
 
 readonly betik=$(readlink -f "$0")
 readonly ana_dizin=$(dirname "$betik")
@@ -24,9 +24,15 @@ readonly hata_raporu="${ana_dizin}/mgm-radar.log"
 readonly baglanti="https://mgm.gov.tr/FTPDATA/uzal/radar"
 
 readonly onek="${betik_ismi}: "
-readonly hata="${onek}${hata_raporu}: "
+readonly hata="${onek}$(basename "$hata_raporu"): "
 
 readonly goruntuleyici="xdg-open"
+
+if [[ "$1" =~ ^(-h|--hata-ayikla)$ ]]; then
+	set -x
+	exec > "${ana_dizin}/hata-ayikla.log" 2>&1
+	shift
+fi
 
 versiyon() {
 	cat << EOF
@@ -49,7 +55,7 @@ ile açar. Varsayılan resim görüntüleyiciniz yerine başka bir görüntüley
 açmasını istiyorsanız bu betik dosyasındaki 29.satırı düzenleyebilirsiniz.
 
 Kullanım:
-  $(basename "$0") <alt_komut> <argümanlar> [-y|--yardim] [-v|--versiyon]
+  $(basename "$0") [-h] <alt_komut> <argümanlar> [-y|--yardim] [-v|--versiyon]
 
 Alt Komutlar:
    sondurum    Sistemdeki son radar görüntüsünü indirir.
@@ -69,6 +75,11 @@ Argümanlar:
                             Varsayılan değer: /tmp/radar/. Bu dizine indirilen
                             görüntüler geçiçidir. Kalıcı olması için bir dizin
                             belirtin.
+  -s, --sadece-indir        İndirilen radar görüntülerinin varsayılan resim
+                            görüntüleyiciniz ile açılmasını engeller.
+  -h, --hata-ayikla         Hata ayıklama modunu etkinleştirir. Bu mod
+                            etkinleştirildiğinde bütün çıktılar 'mgm-radar.log'
+                            dosyasına yazdırılıyor.
   -y, --yardim              Bu yardım mesajını yazdırır.
   -v, --versiyon            Betiğin versiyon numarasını yazdırır.
 
@@ -78,8 +89,11 @@ Lisans:
 Hata Raporlama:
   Betik kodlarıyla ilgili olduğunu düşündüğünüz bir hata alırsanız aşağıdaki
   bağlantıdan hata bildirimi yapabilirsiniz ya da bana e-posta gönderebilirsiniz.
-  Daha verimli hata çözümleme süreci için mümkünse \`mgm-radar.log\` dosyasını da
-  ekleyiniz.
+  Daha verimli hata çözümleme süreci için mümkünse betiği hata ayıklama modunda
+  çalıştırıp, oluşacak olan 'hata-ayikla.log' dosyasını da hata bildiriminize
+  ekleyiniz. Betiği hata ayıklama modunda çalıştırmak için betik ismi ile alt
+  komut arasına -h ya da --hata-ayikla yazmanız yeterli olacaktır. Örneğin:
+  $ mgm-radar -h sondurum -i 6 -u vil
 
     https://github.com/erenhatirnaz/mgm-radar/issues/new
 
@@ -168,7 +182,7 @@ urun_kontrol() {
 		exit 1
 	fi
 
-	if [[ ! "$urun" =~ (vil|maks|ppi|ruzgar)$ ]]; then
+	if [[ ! "$urun" =~ ^(vil|maks|ppi|ruzgar)$ ]]; then
 		echo "${onek}${urun}: Geçersiz ürün." >&2
 		exit 1
 	fi
@@ -188,7 +202,9 @@ sondurum() {
 	local dizin="$3"
 
 	local il
+	set -e
 	il=$(il_str "$il_kodu")
+	set +e
 	local indirme_baglantisi="${baglanti}/${il}/${il}${urun}15.jpg"
 	local dosya_yolu="${dizin}/${il_kodu}-${urun}.jpg"
 
@@ -206,7 +222,9 @@ hareketli() {
 	local dizin="$3"
 
 	local il
+	set -e
 	il=$(il_str "$il_kodu")
+	set +e
 	local indirme_baglantisi="${baglanti}/${il}/${il}${urun}"
 	local dosya_yolu="${dizin}/${il_kodu}-${urun}"
 
@@ -247,16 +265,19 @@ fi
 
 # -y|--yardim ve -v|--versiyon argümanları için
 ALT_KOMUT=${1:-"--yardim"}
-[[ "$ALT_KOMUT" =~ (-y|--yardim)$ ]] && yardim && exit 0
-[[ "$ALT_KOMUT" =~ (-v|--versiyon)$ ]] && versiyon && exit 0
+[[ "$ALT_KOMUT" =~ ^(-y|--yardim)$ ]] && yardim && exit 0
+[[ "$ALT_KOMUT" =~ ^(-v|--versiyon)$ ]] && versiyon && exit 0
 
-if [[ ! "$ALT_KOMUT" =~ (sondurum|hareketli|radarlar) ]]; then
+if [[ ! "$ALT_KOMUT" =~ ^(sondurum|hareketli|radarlar)$ ]]; then
 	echo "${onek}${ALT_KOMUT}: Geçersiz alt komut." >&2
 	exit 1
 fi
 shift
 
 # Argümanların işlenmesi
+SADECE_INDIR=false
+DIZIN="/tmp/mgm-radar/"
+
 while [[ $# -gt 0 ]]
 do
 	case $1 in
@@ -275,14 +296,17 @@ do
 			shift
 			shift
 			;;
+		-s|--sadece-indir)
+			SADECE_INDIR=true
+			shift
+			;;
 		*)
 			shift
 			;;
 	esac
 done
 
-DIZIN=${DIZIN:-/tmp/mgm-radar/}
-if [[ ! "$ALT_KOMUT" =~ (radarlar)$ ]]; then
+if [[ ! "$ALT_KOMUT" =~ ^(radarlar)$ ]]; then
 	il_kontrol "$IL_KODU"
 	urun_kontrol "$URUN"
 	dizin_kontrol "${DIZIN}"
@@ -303,7 +327,7 @@ fi
 
 $ALT_KOMUT "$IL_KODU" "$URUN" "${DIZIN%%/}"
 
-if [[ ! "$ALT_KOMUT" =~ (radarlar)$ ]]; then
+if [[ ! "$ALT_KOMUT" =~ ^(radarlar)$ ]] && ! $SADECE_INDIR; then
 	[[ "$ALT_KOMUT" == "sondurum" ]] && UZANTI="jpg"
 	[[ "$ALT_KOMUT" == "hareketli" ]] && UZANTI="gif"
 
