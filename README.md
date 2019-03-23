@@ -1,5 +1,7 @@
 # mgm-radar
-[![Derlenme durumu](https://travis-ci.org/erenhatirnaz/mgm-radar.svg?branch=master)](https://travis-ci.org/erenhatirnaz/mgm-radar)
+[![derlenme](https://travis-ci.org/erenhatirnaz/mgm-radar.svg?branch=master)](https://travis-ci.org/erenhatirnaz/mgm-radar)
+[![versiyon](https://img.shields.io/github/release/erenhatirnaz/mgm-radar.svg?label=versiyon)](https://github.com/erenhatirnaz/mgm-radar/releases/latest)
+[![lisans](https://img.shields.io/github/license/erenhatirnaz/mgm-radar.svg?label=lisans)](https://github.com/erenhatirnaz/mgm-radar/blob/master/LICENSE)
 
 > Meteorolojik radar görüntüsü indirme aracı
 
