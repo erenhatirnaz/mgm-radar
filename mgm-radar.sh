@@ -20,6 +20,7 @@ readonly versiyon_numarasi="0.2.0"
 
 readonly betik=$(readlink -f "$0")
 readonly ana_dizin=$(dirname "$betik")
+readonly indirme_dizini="/tmp/mgm-radar/"
 readonly hata_raporu="${ana_dizin}/mgm-radar.log"
 readonly baglanti="https://mgm.gov.tr/FTPDATA/uzal/radar"
 
@@ -72,9 +73,9 @@ Argümanlar:
                             istediğiniz ürün. İndirebileceğiniz meteorolojik
                             radar ürünleri: vil, ppi, maks, ruzgar.
   -d, --dizin [DİZİN]       Radar görüntüsünün indirilmesini istediğiniz dizin.
-                            Varsayılan değer: /tmp/radar/. Bu dizine indirilen
-                            görüntüler geçiçidir. Kalıcı olması için bir dizin
-                            belirtin.
+                            Varsayılan değer: ${indirme_dizini}. Bu dizine
+                            indirilen görüntüler geçiçidir. Kalıcı olması için
+                            bir dizin belirtin.
   -s, --sadece-indir        İndirilen radar görüntülerinin varsayılan resim
                             görüntüleyiciniz ile açılmasını engeller.
   -h, --hata-ayikla         Hata ayıklama modunu etkinleştirir. Bu mod
@@ -255,7 +256,7 @@ hareketli() {
 	fi
 }
 
-mkdir -p /tmp/mgm-radar
+mkdir -p -- "${indirme_dizini}"
 
 # İnternet bağlantısı kontrolü
 if ! ping -c 1 -W 1 8.8.8.8 1>/dev/null 2>"$hata_raporu"; then
@@ -276,7 +277,7 @@ shift
 
 # Argümanların işlenmesi
 SADECE_INDIR=false
-DIZIN="/tmp/mgm-radar/"
+DIZIN=${indirme_dizini}
 
 while [[ $# -gt 0 ]]
 do
