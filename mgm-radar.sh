@@ -210,6 +210,7 @@ sondurum() {
 	local dosya_yolu="${dizin}/${il_kodu}-${urun}.jpg"
 
 	if wget -O "${dosya_yolu}" "${indirme_baglantisi}" 2>"$hata_raporu"; then
+		INDIRILEN_DOSYA="$dosya_yolu"
 		echo "${onek}${dosya_yolu}: Radar görüntüsü indirildi."
 	else
 		echo "${hata}Radar görüntüsü indirilirken hata oluştu." >&2
@@ -245,7 +246,8 @@ hareketli() {
 	echo "Hareketli GIF dosyasına dönüştürülüyor..."
 	gif_dosyasi="${dosya_yolu}.gif"
 	if LC_ALL=en_US.UTF convert "${dosya_yolu}"{1..15}".jpg" \
-		 -delay 20 -loop 0 "${gif_dosyasi}" 2>"$hata_raporu"; then
+					 -delay 20 -loop 0 "${gif_dosyasi}" 2>"$hata_raporu"; then
+		INDIRILEN_DOSYA="${gif_dosyasi}"
 		echo "${onek}${dosya_yolu}.gif: Radar görüntüleri GIF olarak kaydedildi."
 	else
 		echo "${hata}GIF dosyası oluşturulması sırasında hata oluştu." >&2
@@ -325,15 +327,12 @@ if [[ "$IL_KODU" == "0" && ! "$URUN" == "ppi" ]]; then
 	echo
 fi
 
+INDIRILEN_DOSYA=""
 $ALT_KOMUT "$IL_KODU" "$URUN" "${DIZIN%%/}"
 
-if [[ ! "$ALT_KOMUT" =~ ^(radarlar)$ ]] && ! $SADECE_INDIR; then
-	[[ "$ALT_KOMUT" == "sondurum" ]] && UZANTI="jpg"
-	[[ "$ALT_KOMUT" == "hareketli" ]] && UZANTI="gif"
-
-	RADAR_GORUNTUSU="${DIZIN%%/}/${IL_KODU}-${URUN}.${UZANTI}"
-	if $goruntuleyici "$RADAR_GORUNTUSU" 1>/dev/null 2>"$hata_raporu"; then
-		echo "${onek}${RADAR_GORUNTUSU}: \`${goruntuleyici}\` ile açıldı."
+if [[ -n $INDIRILEN_DOSYA ]] && ! $SADECE_INDIR; then
+	if $goruntuleyici "$INDIRILEN_DOSYA" 1>/dev/null 2>"$hata_raporu"; then
+		echo "${onek}${INDIRILEN_DOSYA}: \`${goruntuleyici}\` ile açıldı."
 		exit 0
 	else
 		echo "${hata}: \`${goruntuleyici}\` açılırken bir hata oluştu." >&2
