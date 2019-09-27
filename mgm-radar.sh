@@ -183,7 +183,7 @@ urun_kontrol() {
 		exit 1
 	fi
 
-	if [[ ! "$urun" =~ ^(vil|maks|ppi|ruzgar)$ ]]; then
+	if [[ ! "$urun" =~ ^(vil|max|ppi|rzg)$ ]]; then
 		echo "${onek}${urun}: Geçersiz ürün." >&2
 		exit 1
 	fi
@@ -289,6 +289,9 @@ do
 			;;
 		-u|--urun)
 			URUN="${2,,}"
+			# mgm.gov.tr 'deki dizin yapısından dolayı dönüştürülüyor:
+			URUN="${URUN/maks/max}"
+			URUN="${URUN/ruzgar/rzg}"
 			shift
 			shift
 			;;
@@ -312,10 +315,6 @@ if [[ ! "$ALT_KOMUT" =~ ^(radarlar)$ ]]; then
 	urun_kontrol "$URUN"
 	dizin_kontrol "${DIZIN}"
 fi
-
-# mgm.gov.tr 'deki dizin yapısından dolayı dönüştürülüyor
-[[ "$URUN" == "maks" ]] && URUN="max"
-[[ "$URUN" == "ruzgar" ]] && URUN="rzg"
 
 if [[ "$IL_KODU" == "0" && ! "$URUN" == "ppi" ]]; then
 	echo "${onek}Birleştirilmiş görüntü için ürün türü ppi olarak sınırlandırılmıştır."

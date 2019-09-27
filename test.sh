@@ -138,7 +138,7 @@ test_arguman_isleyici_calisiyor_mu() {
 	bash -x mgm-radar.sh sondurum -i 6 -u vil -d test/ -s 1>&2 2>test.log >/dev/null
 
 	il_kodu=$(grep IL_KODU "test.log" | cut -d= -f2)
-	urun=$(grep URUN "test.log" | cut -d= -f2)
+	urun=$(grep URUN "test.log" | cut -d= -f2 | head -n1)
 	dizin=$(grep DIZIN "test.log" | cut -d= -f2 | sort | head -1)
 	sadece_indir=$(grep SADECE_INDIR "test.log" | cut -d= -f2 | sort -r | head -1)
 
