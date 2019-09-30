@@ -202,6 +202,10 @@ sondurum() {
 	local urun="$2"
 	local dizin="$3"
 
+	il_kontrol "$il_kodu"
+	urun_kontrol "$urun"
+	dizin_kontrol "$dizin"
+
 	local il
 	set -e
 	il=$(il_str "$il_kodu")
@@ -222,6 +226,10 @@ hareketli() {
 	local il_kodu="$1"
 	local urun="$2"
 	local dizin="$3"
+
+	il_kontrol "$il_kodu"
+	urun_kontrol "$urun"
+	dizin_kontrol "$dizin"
 
 	local il
 	set -e
@@ -311,12 +319,6 @@ do
 			;;
 	esac
 done
-
-if [[ ! "$ALT_KOMUT" =~ ^(radarlar)$ ]]; then
-	il_kontrol "$IL_KODU"
-	urun_kontrol "$URUN"
-	dizin_kontrol "${DIZIN}"
-fi
 
 if [[ "$IL_KODU" == "0" && ! "$URUN" == "ppi" ]]; then
 	echo "${onek}Birleştirilmiş görüntü için ürün türü ppi olarak sınırlandırılmıştır."
