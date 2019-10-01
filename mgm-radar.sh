@@ -266,6 +266,37 @@ hareketli() {
 	fi
 }
 
+rapor() {
+	local il_kodu="$1"
+	local dizin="${3%%/}"
+	local format="$4"
+
+	il_kontrol "$il_kodu"
+	dizin_kontrol "$dizin"
+
+	if [[ ! "$format" =~ ^(dikey|yatay|kare)$ ]]; then
+		echo "${hata}${format}: Geçersiz format."
+		exit 1
+	fi
+	format="${format/kare/2}"
+	format="${format/dikey/1}"
+	format="${format/yatay/4}"
+
+	for urun in ppi vil max rzg; do
+		sondurum "$il_kodu" "$urun" "${indirme_dizini%%/}"
+	done
+
+	local cikti="${dizin}/${il_kodu}_rapor.jpg"
+	if LC_ALL=en_US.UTF montage -mode concatenate -tile ${format}x \
+					 "${indirme_dizini}${il_kodu}-"*.jpg "$cikti" 2>"$hata_raporu"; then
+		INDIRILEN_DOSYA="$cikti"
+		echo "${onek}${cikti}: Radar ürünleri raporu oluşturuldu."
+	else
+		echo "${hata}Radar ürünleri raporu oluşturulması sırasında hata oluştu." >&2
+		exit 1
+	fi
+}
+
 mkdir -p -- "${indirme_dizini}"
 
 # İnternet bağlantısı kontrolü
@@ -279,7 +310,7 @@ ALT_KOMUT=${1:-"--yardim"}
 [[ "$ALT_KOMUT" =~ ^(-y|--yardim)$ ]] && yardim && exit 0
 [[ "$ALT_KOMUT" =~ ^(-v|--versiyon)$ ]] && versiyon && exit 0
 
-if [[ ! "$ALT_KOMUT" =~ ^(sondurum|hareketli|radarlar)$ ]]; then
+if [[ ! "$ALT_KOMUT" =~ ^(sondurum|hareketli|radarlar|rapor)$ ]]; then
 	echo "${onek}${ALT_KOMUT}: Geçersiz alt komut." >&2
 	exit 1
 fi
@@ -288,6 +319,7 @@ shift
 # Argümanların işlenmesi
 SADECE_INDIR=false
 DIZIN=${indirme_dizini}
+FORMAT="kare"
 
 while [[ $# -gt 0 ]]
 do
@@ -307,6 +339,11 @@ do
 			;;
 		-d|--dizin)
 			DIZIN="$2"
+			shift
+			shift
+			;;
+		-f|--format)
+			FORMAT="$2"
 			shift
 			shift
 			;;
@@ -330,7 +367,7 @@ if [[ "$IL_KODU" == "0" && ! "$URUN" == "ppi" ]]; then
 fi
 
 INDIRILEN_DOSYA=""
-$ALT_KOMUT "$IL_KODU" "$URUN" "${DIZIN%%/}"
+$ALT_KOMUT "$IL_KODU" "$URUN" "${DIZIN%%/}" "$FORMAT"
 
 if [[ -n $INDIRILEN_DOSYA ]] && ! $SADECE_INDIR; then
 	if $goruntuleyici "$INDIRILEN_DOSYA" 1>/dev/null 2>"$hata_raporu"; then
