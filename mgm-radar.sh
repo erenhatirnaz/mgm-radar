@@ -274,13 +274,10 @@ rapor() {
 	il_kontrol "$il_kodu"
 	dizin_kontrol "$dizin"
 
-	if [[ ! "$format" =~ ^(dikey|yatay|kare)$ ]]; then
-		echo "${hata}${format}: Geçersiz format."
+	if [[ ! "$format" =~ ^(1|2|4)$ ]]; then
+		echo "${onek}${format}: Geçersiz format."
 		exit 1
 	fi
-	format="${format/kare/2}"
-	format="${format/dikey/1}"
-	format="${format/yatay/4}"
 
 	for urun in ppi vil max rzg; do
 		sondurum "$il_kodu" "$urun" "${indirme_dizini%%/}"
@@ -319,7 +316,7 @@ shift
 # Argümanların işlenmesi
 SADECE_INDIR=false
 DIZIN=${indirme_dizini}
-FORMAT="kare"
+FORMAT="2"
 
 while [[ $# -gt 0 ]]
 do
@@ -344,6 +341,9 @@ do
 			;;
 		-f|--format)
 			FORMAT="$2"
+			FORMAT="${FORMAT/kare/2}"
+			FORMAT="${FORMAT/dikey/1}"
+			FORMAT="${FORMAT/yatay/4}"
 			shift
 			shift
 			;;
