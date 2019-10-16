@@ -62,6 +62,9 @@ Alt Komutlar:
    sondurum    Sistemdeki son radar görüntüsünü indirir.
   hareketli    Sistemdeki son 15 radar görüntüsünü indirir ve bunları hareketli
                bir GIF dosyasına çevirir.
+      rapor    Tüm meteorolojik radar ürünlerinin tek bir resim dosyasında
+               birleştirir. Birleştirme düzeni özelleştirilebilir.
+               (bkz: Argümanlar/-f,--format)
    radarlar    Meteoroloji radarı bulunan tüm illeri ve kodlarını yazdırır.
 
 Argümanlar:
@@ -76,6 +79,9 @@ Argümanlar:
                             Varsayılan değer: ${indirme_dizini}. Bu dizine
                             indirilen görüntüler geçiçidir. Kalıcı olması için
                             bir dizin belirtin.
+  -f, --format [FORMAT]     Rapor komutunun oluşturduğu birleştirilmiş görüntünün
+                            formatı. Geçerli formatlar: kare, yatay, dikey.
+														Varsayılan değer: kare.
   -s, --sadece-indir        İndirilen radar görüntülerinin varsayılan resim
                             görüntüleyiciniz ile açılmasını engeller.
   -h, --hata-ayikla         Hata ayıklama modunu etkinleştirir. Bu mod
