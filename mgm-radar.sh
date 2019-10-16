@@ -285,7 +285,8 @@ rapor() {
 
 	local cikti="${dizin}/${il_kodu}_rapor.jpg"
 	if LC_ALL=en_US.UTF montage -mode concatenate -tile ${format}x \
-					 "${indirme_dizini}${il_kodu}-"*.jpg "$cikti" 2>"$hata_raporu"; then
+					 "${indirme_dizini}${il_kodu}-"{ppi,vil,max,rzg}.jpg "$cikti" \
+					 2>"$hata_raporu"; then
 		INDIRILEN_DOSYA="$cikti"
 		echo "${onek}${cikti}: Radar ürünleri raporu oluşturuldu."
 	else
