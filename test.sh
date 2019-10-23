@@ -328,8 +328,6 @@ test_rapor_fonksiyonu_gecerli_yatay_cikti_uretiyor_mu() {
 	resim_uzunlugu_esit_olmali "$cikti_dosyasi" "720"
 }
 
-
-
 # Bu test bazı teknik zorluklardan dolayı devre dışı bırakılmıştır
 # test_hata_mesajlari_loglaniyor_mu() {
 # 	unshare -rn ./mgm-radar.sh 2>/dev/null
@@ -337,6 +335,15 @@ test_rapor_fonksiyonu_gecerli_yatay_cikti_uretiyor_mu() {
 # 	dosya_olmali "mgm-radar.log"
 # 	iceriyor_olmali "$cikti" "Network is unreachable"
 # }
+
+# İnternet bağlantısı kontrolü
+if ! ping -c 1 -W 1 8.8.8.8 &>/dev/null; then
+	cat <<-EOF >&2
+	test.sh: İnternet bağlantınız ile ilgili bir sorun oluştu. Testlerin düzgün
+	         çalışabilmesi için internet bağlantısı gereklidir.
+	EOF
+	exit 1
+fi
 
 # Test sürecinde radar görüntüleri test/ dizinine indirilecek
 mkdir -p test
