@@ -369,6 +369,7 @@ if [[ "$IL_KODU" == "0" && ! "$URUN" == "ppi" ]]; then
 	read -rp "PPI ürünü ile devam edilsin mi? (e/H): " -n1 secim
 	secim=${secim:-h}
 	[[ ! $secim =~ [Ee]$ ]] && exit 0
+	[[ $ALT_KOMUT == "rapor" ]] && ALT_KOMUT="sondurum"
 	URUN="ppi"
 	echo
 fi
