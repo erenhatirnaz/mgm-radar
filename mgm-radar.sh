@@ -62,6 +62,9 @@ Alt Komutlar:
    sondurum    Sistemdeki son radar görüntüsünü indirir.
   hareketli    Sistemdeki son 15 radar görüntüsünü indirir ve bunları hareketli
                bir GIF dosyasına çevirir.
+      rapor    Tüm meteorolojik radar ürünlerinin tek bir resim dosyasında
+               birleştirir. Birleştirme düzeni özelleştirilebilir.
+               (bkz: Argümanlar/-f,--format)
    radarlar    Meteoroloji radarı bulunan tüm illeri ve kodlarını yazdırır.
 
 Argümanlar:
@@ -76,6 +79,9 @@ Argümanlar:
                             Varsayılan değer: ${indirme_dizini}. Bu dizine
                             indirilen görüntüler geçiçidir. Kalıcı olması için
                             bir dizin belirtin.
+  -f, --format [FORMAT]     Rapor komutunun oluşturduğu birleştirilmiş görüntünün
+                            formatı. Geçerli formatlar: kare, yatay, dikey.
+														Varsayılan değer: kare.
   -s, --sadece-indir        İndirilen radar görüntülerinin varsayılan resim
                             görüntüleyiciniz ile açılmasını engeller.
   -h, --hata-ayikla         Hata ayıklama modunu etkinleştirir. Bu mod
@@ -183,7 +189,7 @@ urun_kontrol() {
 		exit 1
 	fi
 
-	if [[ ! "$urun" =~ ^(vil|maks|ppi|ruzgar)$ ]]; then
+	if [[ ! "$urun" =~ ^(vil|max|ppi|rzg)$ ]]; then
 		echo "${onek}${urun}: Geçersiz ürün." >&2
 		exit 1
 	fi
@@ -202,6 +208,10 @@ sondurum() {
 	local urun="$2"
 	local dizin="$3"
 
+	il_kontrol "$il_kodu"
+	urun_kontrol "$urun"
+	dizin_kontrol "$dizin"
+
 	local il
 	set -e
 	il=$(il_str "$il_kodu")
@@ -210,6 +220,7 @@ sondurum() {
 	local dosya_yolu="${dizin}/${il_kodu}-${urun}.jpg"
 
 	if wget -O "${dosya_yolu}" "${indirme_baglantisi}" 2>"$hata_raporu"; then
+		INDIRILEN_DOSYA="$dosya_yolu"
 		echo "${onek}${dosya_yolu}: Radar görüntüsü indirildi."
 	else
 		echo "${hata}Radar görüntüsü indirilirken hata oluştu." >&2
@@ -221,6 +232,10 @@ hareketli() {
 	local il_kodu="$1"
 	local urun="$2"
 	local dizin="$3"
+
+	il_kontrol "$il_kodu"
+	urun_kontrol "$urun"
+	dizin_kontrol "$dizin"
 
 	local il
 	set -e
@@ -245,7 +260,8 @@ hareketli() {
 	echo "Hareketli GIF dosyasına dönüştürülüyor..."
 	gif_dosyasi="${dosya_yolu}.gif"
 	if LC_ALL=en_US.UTF convert "${dosya_yolu}"{1..15}".jpg" \
-		 -delay 20 -loop 0 "${gif_dosyasi}" 2>"$hata_raporu"; then
+					 -delay 20 -loop 0 "${gif_dosyasi}" 2>"$hata_raporu"; then
+		INDIRILEN_DOSYA="${gif_dosyasi}"
 		echo "${onek}${dosya_yolu}.gif: Radar görüntüleri GIF olarak kaydedildi."
 	else
 		echo "${hata}GIF dosyası oluşturulması sırasında hata oluştu." >&2
@@ -253,6 +269,35 @@ hareketli() {
 
 	if rm "${dosya_yolu}"{1..15}".jpg"; then
 		echo "GIF oluşturmak için indirilen görüntüler silindi."
+	fi
+}
+
+rapor() {
+	local il_kodu="$1"
+	local dizin="${3%%/}"
+	local format="$4"
+
+	il_kontrol "$il_kodu"
+	dizin_kontrol "$dizin"
+
+	if [[ ! "$format" =~ ^(1|2|4)$ ]]; then
+		echo "${onek}${format}: Geçersiz format."
+		exit 1
+	fi
+
+	for urun in ppi vil max rzg; do
+		sondurum "$il_kodu" "$urun" "${indirme_dizini%%/}"
+	done
+
+	local cikti="${dizin}/${il_kodu}_rapor.jpg"
+	if LC_ALL=en_US.UTF montage -mode concatenate -tile ${format}x \
+					 "${indirme_dizini}${il_kodu}-"{ppi,vil,max,rzg}.jpg "$cikti" \
+					 2>"$hata_raporu"; then
+		INDIRILEN_DOSYA="$cikti"
+		echo "${onek}${cikti}: Radar ürünleri raporu oluşturuldu."
+	else
+		echo "${hata}Radar ürünleri raporu oluşturulması sırasında hata oluştu." >&2
+		exit 1
 	fi
 }
 
@@ -269,7 +314,7 @@ ALT_KOMUT=${1:-"--yardim"}
 [[ "$ALT_KOMUT" =~ ^(-y|--yardim)$ ]] && yardim && exit 0
 [[ "$ALT_KOMUT" =~ ^(-v|--versiyon)$ ]] && versiyon && exit 0
 
-if [[ ! "$ALT_KOMUT" =~ ^(sondurum|hareketli|radarlar)$ ]]; then
+if [[ ! "$ALT_KOMUT" =~ ^(sondurum|hareketli|radarlar|rapor)$ ]]; then
 	echo "${onek}${ALT_KOMUT}: Geçersiz alt komut." >&2
 	exit 1
 fi
@@ -278,6 +323,7 @@ shift
 # Argümanların işlenmesi
 SADECE_INDIR=false
 DIZIN=${indirme_dizini}
+FORMAT="2"
 
 while [[ $# -gt 0 ]]
 do
@@ -289,11 +335,22 @@ do
 			;;
 		-u|--urun)
 			URUN="${2,,}"
+			# mgm.gov.tr 'deki dizin yapısından dolayı dönüştürülüyor:
+			URUN="${URUN/maks/max}"
+			URUN="${URUN/ruzgar/rzg}"
 			shift
 			shift
 			;;
 		-d|--dizin)
 			DIZIN="$2"
+			shift
+			shift
+			;;
+		-f|--format)
+			FORMAT="$2"
+			FORMAT="${FORMAT/kare/2}"
+			FORMAT="${FORMAT/dikey/1}"
+			FORMAT="${FORMAT/yatay/4}"
 			shift
 			shift
 			;;
@@ -307,34 +364,22 @@ do
 	esac
 done
 
-if [[ ! "$ALT_KOMUT" =~ ^(radarlar)$ ]]; then
-	il_kontrol "$IL_KODU"
-	urun_kontrol "$URUN"
-	dizin_kontrol "${DIZIN}"
-fi
-
-# mgm.gov.tr 'deki dizin yapısından dolayı dönüştürülüyor
-[[ "$URUN" == "maks" ]] && URUN="max"
-[[ "$URUN" == "ruzgar" ]] && URUN="rzg"
-
 if [[ "$IL_KODU" == "0" && ! "$URUN" == "ppi" ]]; then
 	echo "${onek}Birleştirilmiş görüntü için ürün türü ppi olarak sınırlandırılmıştır."
 	read -rp "PPI ürünü ile devam edilsin mi? (e/H): " -n1 secim
 	secim=${secim:-h}
 	[[ ! $secim =~ [Ee]$ ]] && exit 0
+	[[ $ALT_KOMUT == "rapor" ]] && ALT_KOMUT="sondurum"
 	URUN="ppi"
 	echo
 fi
 
-$ALT_KOMUT "$IL_KODU" "$URUN" "${DIZIN%%/}"
+INDIRILEN_DOSYA=""
+$ALT_KOMUT "$IL_KODU" "$URUN" "${DIZIN%%/}" "$FORMAT"
 
-if [[ ! "$ALT_KOMUT" =~ ^(radarlar)$ ]] && ! $SADECE_INDIR; then
-	[[ "$ALT_KOMUT" == "sondurum" ]] && UZANTI="jpg"
-	[[ "$ALT_KOMUT" == "hareketli" ]] && UZANTI="gif"
-
-	RADAR_GORUNTUSU="${DIZIN%%/}/${IL_KODU}-${URUN}.${UZANTI}"
-	if $goruntuleyici "$RADAR_GORUNTUSU" 1>/dev/null 2>"$hata_raporu"; then
-		echo "${onek}${RADAR_GORUNTUSU}: \`${goruntuleyici}\` ile açıldı."
+if [[ -n $INDIRILEN_DOSYA ]] && ! $SADECE_INDIR; then
+	if $goruntuleyici "$INDIRILEN_DOSYA" 1>/dev/null 2>"$hata_raporu"; then
+		echo "${onek}${INDIRILEN_DOSYA}: \`${goruntuleyici}\` ile açıldı."
 		exit 0
 	else
 		echo "${hata}: \`${goruntuleyici}\` açılırken bir hata oluştu." >&2

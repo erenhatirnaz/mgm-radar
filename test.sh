@@ -103,6 +103,38 @@ resim_katman_sayisi_esit_olmali() {
 	unset dosya beklenen_deger gercek_deger
 }
 
+resim_genisligi_esit_olmali() {
+	local dosya beklenen_deger gercek_deger
+	dosya="$1"
+	beklenen_deger="$2"
+
+	gercek_deger=$(identify "$dosya" | awk '{print $3}' | cut -dx -f1)
+
+	if [[ "$gercek_deger" -eq "$beklenen_deger" ]]; then
+		return 0
+	else
+		hata "'${dosya}' dosyasının '${gercek_deger}' olan genişliğinin"\
+				 "'${beklenen_deger}' olması gerekiyordu."
+		return 1
+	fi
+}
+
+resim_uzunlugu_esit_olmali() {
+	local dosya beklenen_deger gercek_deger
+	dosya="$1"
+	beklenen_deger="$2"
+
+	gercek_deger=$(identify "$dosya" | awk '{print $3}' | cut -dx -f2)
+
+	if [[ "$gercek_deger" -eq "$beklenen_deger" ]]; then
+		return 0
+	else
+		hata "'${dosya}' dosyasının '${gercek_deger}' olan uzunluğunun"\
+				 "'${beklenen_deger}' olması gerekiyordu."
+		return 1
+	fi
+}
+
 # Testler
 test_varsayilan_indirme_klasoru_olustu_mu() {
 	./mgm-radar.sh > /dev/null
@@ -123,7 +155,7 @@ test_gecersiz_altkomut_hatası_veriyor_mu() {
 }
 
 test_gecerli_altkomutlar_kabul_ediliyor_mu() {
-	altkomutlar=( radarlar sondurum hareketli -y --yardim -v --versiyon )
+	altkomutlar=( radarlar sondurum hareketli rapor -y --yardim -v --versiyon )
 
 	for altkomut in "${altkomutlar[@]}"; do
 		cikti=$(./mgm-radar.sh "$altkomut" 2>&1)
@@ -135,17 +167,19 @@ test_gecerli_altkomutlar_kabul_ediliyor_mu() {
 }
 
 test_arguman_isleyici_calisiyor_mu() {
-	bash -x mgm-radar.sh sondurum -i 6 -u vil -d test/ -s 1>&2 2>test.log >/dev/null
+	bash -x mgm-radar.sh sondurum -i 6 -u vil -d test/ -f yatay -s 1>&2 2>test.log >/dev/null
 
 	il_kodu=$(grep IL_KODU "test.log" | cut -d= -f2)
-	urun=$(grep URUN "test.log" | cut -d= -f2)
+	urun=$(grep URUN "test.log" | cut -d= -f2 | head -n1)
 	dizin=$(grep DIZIN "test.log" | cut -d= -f2 | sort | head -1)
 	sadece_indir=$(grep SADECE_INDIR "test.log" | cut -d= -f2 | sort -r | head -1)
+	format=$(grep FORMAT "test.log" | awk 'NR==5' | cut -d= -f2)
 
 	esit_olmali "$il_kodu" "6"
 	esit_olmali "$urun" "vil"
 	esit_olmali "$dizin" "test/"
 	esit_olmali "$sadece_indir" "true"
+	esit_olmali "$format" "4"
 }
 
 test_il_kontrol_fonksiyonu_calisiyor_mu() {
@@ -236,6 +270,65 @@ test_sadece_indir_aciksa_resim_gostermiyor_mu() {
 
 	icermiyor_olmali "$cikti" "\`xdg-open\` ile açıldı"
 }
+
+test_rapor_fonksiyonu_gecersiz_format_hatasi_veriyor_mu() {
+	cikti=$(./mgm-radar.sh rapor -i 6 -f deneme -s 2>&1)
+
+	iceriyor_olmali "$cikti" "Geçersiz"
+}
+
+test_formatlar_sayilara_cevriliyor_mu() {
+	declare -A formatlar=( [kare]=2 [dikey]=1 [yatay]=4 )
+
+	for format in "${!formatlar[@]}"; do
+		bash -x mgm-radar.sh rapor -i 6 -f "$format" -s -d test/ 1>&2 2>test.log > /dev/null
+
+		frmt=$(grep FORMAT test.log | awk 'NR==5' | cut -d= -f2)
+
+		esit_olmali "$frmt" "${formatlar[$format]}"
+
+		rm test.log
+		unset frmt format
+	done
+}
+
+test_rapor_fonksiyonu_gecerli_kare_cikti_uretiyor_mu() {
+	./mgm-radar.sh rapor -i 6 -f kare -d test/ -s 2>&1 >/dev/null
+
+	cikti_dosyasi="test/6_rapor.jpg"
+
+	dosya_olmali "$cikti_dosyasi"
+	resim_turu_esit_olmali "$cikti_dosyasi" "JPEG"
+	resim_katman_sayisi_esit_olmali "$cikti_dosyasi" 1
+	resim_genisligi_esit_olmali "$cikti_dosyasi" "1760"
+	resim_uzunlugu_esit_olmali "$cikti_dosyasi" "1440"
+}
+
+test_rapor_fonksiyonu_gecerli_dikey_cikti_uretiyor_mu() {
+	./mgm-radar.sh rapor -i 6 -f dikey -d test/ -s 2>&1 >/dev/null
+
+	cikti_dosyasi="test/6_rapor.jpg"
+
+	dosya_olmali "$cikti_dosyasi"
+	resim_turu_esit_olmali "$cikti_dosyasi" "JPEG"
+	resim_katman_sayisi_esit_olmali "$cikti_dosyasi" 1
+	resim_genisligi_esit_olmali "$cikti_dosyasi" "880"
+	resim_uzunlugu_esit_olmali "$cikti_dosyasi" "2880"
+}
+
+test_rapor_fonksiyonu_gecerli_yatay_cikti_uretiyor_mu() {
+	./mgm-radar.sh rapor -i 6 -f yatay -d test/ -s 2>&1 >/dev/null
+
+	cikti_dosyasi="test/6_rapor.jpg"
+
+	dosya_olmali "$cikti_dosyasi"
+	resim_turu_esit_olmali "$cikti_dosyasi" "JPEG"
+	resim_katman_sayisi_esit_olmali "$cikti_dosyasi" 1
+	resim_genisligi_esit_olmali "$cikti_dosyasi" "3520"
+	resim_uzunlugu_esit_olmali "$cikti_dosyasi" "720"
+}
+
+
 
 # Bu test bazı teknik zorluklardan dolayı devre dışı bırakılmıştır
 # test_hata_mesajlari_loglaniyor_mu() {
