@@ -265,6 +265,7 @@ hareketli() {
 		echo "${onek}${dosya_yolu}.gif: Radar görüntüleri GIF olarak kaydedildi."
 	else
 		echo "${hata}GIF dosyası oluşturulması sırasında hata oluştu." >&2
+		exit 1
 	fi
 
 	if rm "${dosya_yolu}"{1..15}".jpg"; then
