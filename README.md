@@ -1,4 +1,4 @@
-# mgm-radar
+# ![mgm-radar](./gorseller/logo.gif)
 [![derlenme](https://travis-ci.org/erenhatirnaz/mgm-radar.svg?branch=master)](https://travis-ci.org/erenhatirnaz/mgm-radar)
 [![versiyon](https://img.shields.io/github/release/erenhatirnaz/mgm-radar.svg?label=versiyon)](https://github.com/erenhatirnaz/mgm-radar/releases/latest)
 [![lisans](https://img.shields.io/github/license/erenhatirnaz/mgm-radar.svg?label=lisans)](https://github.com/erenhatirnaz/mgm-radar/blob/master/LICENSE)
@@ -27,12 +27,12 @@ bir betik kodladım. Ben gün içerisinde sıkça kullanıyorum.
 
 ## Kurulumu ve Kaldırılması
 
-Gereksinimler:
+### Gereksinimler:
 - Bash 4.0 veya üzeri (kontrol etmek için `bash --version`),
 - `wget` - görüntüleri indirmek için (`sudo apt install wget`)
 - `imagemagick` - hareketli gif oluşturmak için (`sudo apt install imagemagick`)
 
-Kurulum aşamaları:
+### Kurulum aşamaları:
 ```sh
 $ git clone https://github.com/erenhatirnaz/mgm-radar.git
 $ cd mgm-radar
@@ -47,7 +47,7 @@ siz kişisel betiklerinizi farklı bir dizinde saklıyorsanız
 (mesela ben `~/scripts/` konumunu kullanıyorum), o zaman `Makefile` dosyası
 içerisindeki 2.satırdaki `hedef` değişkenini düzenleyebilirsiniz.
 
-Kaldırmak için ise:
+### Kaldırmak için:
 ```sh
 $ make kaldir
 ```
@@ -72,6 +72,17 @@ ve görüntülemek için:
 ```sh
 $ mgm-radar hareketli --il-kodu 61 --urun ppi
 ```
+
+Tüm meteorolojik radar ürünlerini indirip, bunları tek bir görselde
+birleştirmek için:
+```sh
+$ mgm-radar rapor -i 55
+```
+
+`rapor` alt komutu görüntüleri varsayılan olarak kare (2x2) şeklinde
+birleştirir. Eğer farklı formatlarda birleştirme yapmak istiyorsanız:
+her satırda bir görüntü için `-f dikey`, bir satırda tüm görüntüleri
+birleştirmek için `-f yatay` argümanlarını kullanabilirsiniz.
 
 Radar görüntüleri varsayılan olarak `/tmp/mgm-radar/` konumuna indirilir. Burası
 geçiçi bir dizidir ve bilgisayarınızı kapattığınızda silinir. Kalıcı olarak başka
@@ -98,9 +109,10 @@ Betiğin tüm fonksiyonlarını test etmek için `make test` komutunu
 çalıştırabilirsiniz.
 
 ## Ekran Görüntüleri
-![mgm-radar --yardim](https://erenhatirnaz.files.wordpress.com/2019/01/mgm-radar-3.png)
-![mgm-radar sondurum -i 55 -u ppi](https://erenhatirnaz.files.wordpress.com/2019/01/mgm-radar-1.png)
-![mgm-radar hareketli -i 55 -u ppi](https://erenhatirnaz.files.wordpress.com/2019/01/mgm-radar-2-min.gif)
+![mgm-radar --yardim](./gorseller/mgm-yardim.png)
+![mgm-radar sondurum -i 35 -u ppi](./gorseller/mgm-sondurum.png)
+![mgm-radar hareketli -i 35 -u vil](./gorseller/mgm-hareketli.gif)
+![mgm-radar rapor -i 35](./gorseller/mgm-rapor.png)
 
 ## Lisansı
 

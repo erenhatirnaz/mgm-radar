@@ -1,3 +1,15 @@
+# 0.3.0
+  - Yeni özellik: Yeni altkomut `rapor` eklendi
+	([#8](https://github.com/erenhatirnaz/mgm-radar/issues/8))
+  - Hata çözüldü: Yardım metininde varsayılan indirme dizini yanlış
+    yazılmış
+    ([#9](https://github.com/erenhatirnaz/mgm-radar/issues/9))
+  - Hata çözüldü: İnternet bağlantısı yoksa testler çalışmasın
+	([#12](https://github.com/erenhatirnaz/mgm-radar/issues/12))
+  - Hata çözüldü: `hareketli` fonksiyonu hata olursa 1 koduyla
+	çıkmıyor
+	([#13](https://github.com/erenhatirnaz/mgm-radar/issues/13))
+
 # 0.2.0
   - Yeni özellik: Sadece indir
   ([#4](https://github.com/erenhatirnaz/mgm-radar/issues/4))
