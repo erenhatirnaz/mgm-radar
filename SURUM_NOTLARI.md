@@ -1,3 +1,7 @@
+# 0.3.1
+  - Hata çözüldü: Yardım dokümanında girintileme sorunu var
+	([#18](https://github.com/erenhatirnaz/mgm-radar/issues/18))
+
 # 0.3.0
   - Yeni özellik: Yeni altkomut `rapor` eklendi
 	([#8](https://github.com/erenhatirnaz/mgm-radar/issues/8))

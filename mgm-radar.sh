@@ -16,7 +16,7 @@
 # adresine bakınız.
 
 readonly betik_ismi="mgm-radar"
-readonly versiyon_numarasi="0.3.0"
+readonly versiyon_numarasi="0.3.1"
 
 readonly betik=$(readlink -f "$0")
 readonly ana_dizin=$(dirname "$betik")
@@ -81,7 +81,7 @@ Argümanlar:
                             bir dizin belirtin.
   -f, --format [FORMAT]     Rapor komutunun oluşturduğu birleştirilmiş görüntünün
                             formatı. Geçerli formatlar: kare, yatay, dikey.
-														Varsayılan değer: kare.
+                            Varsayılan değer: kare.
   -s, --sadece-indir        İndirilen radar görüntülerinin varsayılan resim
                             görüntüleyiciniz ile açılmasını engeller.
   -h, --hata-ayikla         Hata ayıklama modunu etkinleştirir. Bu mod
