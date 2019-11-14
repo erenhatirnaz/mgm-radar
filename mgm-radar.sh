@@ -81,7 +81,7 @@ Argümanlar:
                             bir dizin belirtin.
   -f, --format [FORMAT]     Rapor komutunun oluşturduğu birleştirilmiş görüntünün
                             formatı. Geçerli formatlar: kare, yatay, dikey.
-														Varsayılan değer: kare.
+                            Varsayılan değer: kare.
   -s, --sadece-indir        İndirilen radar görüntülerinin varsayılan resim
                             görüntüleyiciniz ile açılmasını engeller.
   -h, --hata-ayikla         Hata ayıklama modunu etkinleştirir. Bu mod
