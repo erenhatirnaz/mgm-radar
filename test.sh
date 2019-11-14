@@ -328,6 +328,16 @@ test_rapor_fonksiyonu_gecerli_yatay_cikti_uretiyor_mu() {
 	resim_uzunlugu_esit_olmali "$cikti_dosyasi" "720"
 }
 
+test_girintileme_sorunu_olmamali() {
+	yardim=$(./mgm-radar.sh --yardim | grep -P '\t')
+	versiyon=$(./mgm-radar.sh --versiyon | grep -P '\t')
+	radarlar=$(./mgm-radar.sh radarlar | grep -P '\t')
+
+	esit_olmali "$yardim" ""
+	esit_olmali "$versiyon" ""
+	esit_olmali "$radarlar" ""
+}
+
 # Bu test bazı teknik zorluklardan dolayı devre dışı bırakılmıştır
 # test_hata_mesajlari_loglaniyor_mu() {
 # 	unshare -rn ./mgm-radar.sh 2>/dev/null
@@ -354,7 +364,7 @@ for fonk in $(declare -F | cut -d' ' -f3 | grep '^test_*'); do
 	eval "$fonk"
 	rm -rf {mgm-radar,test,hata-ayikla}.log test/*.{jpg,gif}
 	unset cikti cikti1 cikti2 radar_goruntusu urun dizin sadece_indir il_kodu \
-				kontroller alkomutlar
+				kontroller alkomutlar yardim versiyon radarlar
 done
 rm -rf test/
 
