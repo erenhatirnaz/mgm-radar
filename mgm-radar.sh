@@ -349,6 +349,11 @@ do
 			;;
 		-f|--format)
 			FORMAT="$2"
+			# Burada kullanıcıdan aldığım değerleri sayılara çevirmemdeki amaç rapor
+			# fonksiyonu içinde ImageMagick aracına gönderirken kolaylık sağlaması.
+			# Sayılar, oluşturulacak görselde satır başına gelecek radar görüntüsü
+			# adetini temsil ediyor. Örneğin '2' değeri, her satırda 2 radar görüntüsü
+			# olsun anlamına geliyor.
 			FORMAT=$(echo "$FORMAT" | sed -e 's/^kare$/2/g')
 			FORMAT=$(echo "$FORMAT" | sed -e 's/^dikey$/1/g')
 			FORMAT=$(echo "$FORMAT" | sed -e 's/^yatay$/4/g')
