@@ -337,8 +337,8 @@ do
 		-u|--urun)
 			URUN="${2,,}"
 			# mgm.gov.tr 'deki dizin yapısından dolayı dönüştürülüyor:
-			URUN="${URUN/maks/max}"
-			URUN="${URUN/ruzgar/rzg}"
+			URUN=$(echo "$URUN" | sed -e 's/^maks$/max/g')
+			URUN=$(echo "$URUN" | sed -e 's/^ruzgar$/rzg/g')
 			shift
 			shift
 			;;
@@ -349,9 +349,9 @@ do
 			;;
 		-f|--format)
 			FORMAT="$2"
-			FORMAT="${FORMAT/kare/2}"
-			FORMAT="${FORMAT/dikey/1}"
-			FORMAT="${FORMAT/yatay/4}"
+			FORMAT=$(echo "$FORMAT" | sed -e 's/^kare$/2/g')
+			FORMAT=$(echo "$FORMAT" | sed -e 's/^dikey$/1/g')
+			FORMAT=$(echo "$FORMAT" | sed -e 's/^yatay$/4/g')
 			shift
 			shift
 			;;
