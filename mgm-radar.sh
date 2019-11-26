@@ -285,7 +285,7 @@ rapor() {
 	fi
 
 	for urun in ppi vil max rzg; do
-		sondurum "$il_kodu" "$urun" "${indirme_dizini%%/}"
+		sondurum "$il_kodu" "$urun" "${dizin%%/}"
 	done
 
 	local cikti="${dizin}/${il_kodu}_rapor.jpg"
