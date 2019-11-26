@@ -386,9 +386,10 @@ fi
 INDIRILEN_DOSYA=""
 $ALT_KOMUT "$IL_KODU" "$URUN" "${DIZIN%%/}" "$FORMAT"
 
-if [[ "$ALT_KOMUT" == "hareketli" ]] && ! $KALSIN && \
-		rm "${DIZIN}/${IL_KODU}-${URUN}"{1..15}".jpg"; then
-	echo "GIF oluşturmak için indirilen görüntüler silindi."
+if [[ "$ALT_KOMUT" =~ ^(hareketli|rapor)$ ]] && ! $KALSIN; then
+	 rm -f "${DIZIN}/${IL_KODU}-${URUN}"{1..15}".jpg"
+	 rm -f "${DIZIN}/${IL_KODU}-"{ppi,vil,max,rzg}".jpg"
+	echo "Radar görüntüsü oluşturmak için indirilen görüntüler silindi."
 fi
 
 if [[ -n $INDIRILEN_DOSYA ]] && ! $SADECE_INDIR; then
