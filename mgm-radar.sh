@@ -84,6 +84,8 @@ Argümanlar:
                             Varsayılan değer: kare.
   -s, --sadece-indir        İndirilen radar görüntülerinin varsayılan resim
                             görüntüleyiciniz ile açılmasını engeller.
+  -k, --kalsin              `hareketli` alt komutunun GIF oluşturmak için indirdiği
+                            radar görüntülerinin silinmemesini sağlar.
   -h, --hata-ayikla         Hata ayıklama modunu etkinleştirir. Bu mod
                             etkinleştirildiğinde bütün çıktılar 'mgm-radar.log'
                             dosyasına yazdırılıyor.
@@ -267,10 +269,6 @@ hareketli() {
 		echo "${hata}GIF dosyası oluşturulması sırasında hata oluştu." >&2
 		exit 1
 	fi
-
-	if rm "${dosya_yolu}"{1..15}".jpg"; then
-		echo "GIF oluşturmak için indirilen görüntüler silindi."
-	fi
 }
 
 rapor() {
@@ -323,6 +321,7 @@ shift
 
 # Argümanların işlenmesi
 SADECE_INDIR=false
+KALSIN=false
 DIZIN=${indirme_dizini}
 FORMAT="2"
 
@@ -364,6 +363,10 @@ do
 			SADECE_INDIR=true
 			shift
 			;;
+		-k|--kalsin)
+			KALSIN=true
+			shift
+			;;
 		*)
 			shift
 			;;
@@ -382,6 +385,12 @@ fi
 
 INDIRILEN_DOSYA=""
 $ALT_KOMUT "$IL_KODU" "$URUN" "${DIZIN%%/}" "$FORMAT"
+
+
+if [[ "$ALT_KOMUT" == "hareketli" ]] && ! $KALSIN && \
+		rm "${DIZIN}/${IL_KODU}-${URUN}"{1..15}".jpg"; then
+	echo "GIF oluşturmak için indirilen görüntüler silindi."
+fi
 
 if [[ -n $INDIRILEN_DOSYA ]] && ! $SADECE_INDIR; then
 	if $goruntuleyici "$INDIRILEN_DOSYA" 1>/dev/null 2>"$hata_raporu"; then
