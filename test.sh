@@ -338,6 +338,26 @@ test_girintileme_sorunu_olmamali() {
 	esit_olmali "$radarlar" ""
 }
 
+test_kalsin_argumanı_yoksa_goruntuler_siliniyor_olmali() {
+	./mgm-radar.sh hareketli -i 6 -u vil -d test/ -s 2>&1 >/dev/null
+
+	dosya_listesi=$(ls test/)
+
+	icermiyor_olmali "$dosya_listesi" "6-vil1.jpg"
+	icermiyor_olmali "$dosya_listesi" "6-vil7.jpg"
+	icermiyor_olmali "$dosya_listesi" "6-vil15.jpg"
+}
+
+test_kalsin_argumanı_varsa_goruntuler_silinmiyor_olmali() {
+	./mgm-radar.sh rapor -i 34 -d test/ -s -k 2>&1 >/dev/null
+
+	dosya_listesi=$(ls test/)
+
+	iceriyor_olmali "$dosya_listesi" "34-ppi.jpg"
+	iceriyor_olmali "$dosya_listesi" "34-vil.jpg"
+	iceriyor_olmali "$dosya_listesi" "34-max.jpg"
+}
+
 # Bu test bazı teknik zorluklardan dolayı devre dışı bırakılmıştır
 # test_hata_mesajlari_loglaniyor_mu() {
 # 	unshare -rn ./mgm-radar.sh 2>/dev/null
@@ -364,7 +384,7 @@ for fonk in $(declare -F | cut -d' ' -f3 | grep '^test_*'); do
 	eval "$fonk"
 	rm -rf {mgm-radar,test,hata-ayikla}.log test/*.{jpg,gif}
 	unset cikti cikti1 cikti2 radar_goruntusu urun dizin sadece_indir il_kodu \
-				kontroller alkomutlar yardim versiyon radarlar
+				kontroller alkomutlar yardim versiyon radarlar dosya_listesi
 done
 rm -rf test/
 
