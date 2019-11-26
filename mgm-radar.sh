@@ -84,8 +84,9 @@ Argümanlar:
                             Varsayılan değer: kare.
   -s, --sadece-indir        İndirilen radar görüntülerinin varsayılan resim
                             görüntüleyiciniz ile açılmasını engeller.
-  -k, --kalsin              \`hareketli\` alt komutunun GIF oluşturmak için indirdiği
-                            radar görüntülerinin silinmemesini sağlar.
+  -k, --kalsin              \`hareketli\` ve \`rapor\` alt komutlarının radar
+                            görüntüsü oluşturmak için indirdiği dosyaların
+                            silinmemesini sağlar.
   -h, --hata-ayikla         Hata ayıklama modunu etkinleştirir. Bu mod
                             etkinleştirildiğinde bütün çıktılar 'mgm-radar.log'
                             dosyasına yazdırılıyor.
