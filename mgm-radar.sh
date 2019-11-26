@@ -84,7 +84,7 @@ Argümanlar:
                             Varsayılan değer: kare.
   -s, --sadece-indir        İndirilen radar görüntülerinin varsayılan resim
                             görüntüleyiciniz ile açılmasını engeller.
-  -k, --kalsin              `hareketli` alt komutunun GIF oluşturmak için indirdiği
+  -k, --kalsin              \`hareketli\` alt komutunun GIF oluşturmak için indirdiği
                             radar görüntülerinin silinmemesini sağlar.
   -h, --hata-ayikla         Hata ayıklama modunu etkinleştirir. Bu mod
                             etkinleştirildiğinde bütün çıktılar 'mgm-radar.log'
@@ -385,7 +385,6 @@ fi
 
 INDIRILEN_DOSYA=""
 $ALT_KOMUT "$IL_KODU" "$URUN" "${DIZIN%%/}" "$FORMAT"
-
 
 if [[ "$ALT_KOMUT" == "hareketli" ]] && ! $KALSIN && \
 		rm "${DIZIN}/${IL_KODU}-${URUN}"{1..15}".jpg"; then
