@@ -84,6 +84,9 @@ Argümanlar:
                             Varsayılan değer: kare.
   -s, --sadece-indir        İndirilen radar görüntülerinin varsayılan resim
                             görüntüleyiciniz ile açılmasını engeller.
+  -k, --kalsin              \`hareketli\` ve \`rapor\` alt komutlarının radar
+                            görüntüsü oluşturmak için indirdiği dosyaların
+                            silinmemesini sağlar.
   -h, --hata-ayikla         Hata ayıklama modunu etkinleştirir. Bu mod
                             etkinleştirildiğinde bütün çıktılar 'mgm-radar.log'
                             dosyasına yazdırılıyor.
@@ -267,10 +270,6 @@ hareketli() {
 		echo "${hata}GIF dosyası oluşturulması sırasında hata oluştu." >&2
 		exit 1
 	fi
-
-	if rm "${dosya_yolu}"{1..15}".jpg"; then
-		echo "GIF oluşturmak için indirilen görüntüler silindi."
-	fi
 }
 
 rapor() {
@@ -287,12 +286,13 @@ rapor() {
 	fi
 
 	for urun in ppi vil max rzg; do
-		sondurum "$il_kodu" "$urun" "${indirme_dizini%%/}"
+		sondurum "$il_kodu" "$urun" "${dizin%%/}"
 	done
 
-	local cikti="${dizin}/${il_kodu}_rapor.jpg"
+	local dosya_onek="${dizin}/${il_kodu}"
+	local cikti="${dosya_onek}-rapor.jpg"
 	if LC_ALL=en_US.UTF montage -mode concatenate -tile ${format}x \
-					 "${indirme_dizini}${il_kodu}-"{ppi,vil,max,rzg}.jpg "$cikti" \
+					 "${dosya_onek}-"{ppi,vil,max,rzg}.jpg "$cikti" \
 					 2>"$hata_raporu"; then
 		INDIRILEN_DOSYA="$cikti"
 		echo "${onek}${cikti}: Radar ürünleri raporu oluşturuldu."
@@ -323,6 +323,7 @@ shift
 
 # Argümanların işlenmesi
 SADECE_INDIR=false
+KALSIN=false
 DIZIN=${indirme_dizini}
 FORMAT="2"
 
@@ -364,6 +365,10 @@ do
 			SADECE_INDIR=true
 			shift
 			;;
+		-k|--kalsin)
+			KALSIN=true
+			shift
+			;;
 		*)
 			shift
 			;;
@@ -382,6 +387,12 @@ fi
 
 INDIRILEN_DOSYA=""
 $ALT_KOMUT "$IL_KODU" "$URUN" "${DIZIN%%/}" "$FORMAT"
+
+if [[ "$ALT_KOMUT" =~ ^(hareketli|rapor)$ ]] && ! $KALSIN; then
+	 rm -f "${DIZIN}/${IL_KODU}-${URUN}"{1..15}".jpg"
+	 rm -f "${DIZIN}/${IL_KODU}-"{ppi,vil,max,rzg}".jpg"
+	echo "Radar görüntüsü oluşturmak için indirilen görüntüler silindi."
+fi
 
 if [[ -n $INDIRILEN_DOSYA ]] && ! $SADECE_INDIR; then
 	if $goruntuleyici "$INDIRILEN_DOSYA" 1>/dev/null 2>"$hata_raporu"; then

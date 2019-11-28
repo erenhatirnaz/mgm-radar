@@ -295,7 +295,7 @@ test_formatlar_sayilara_cevriliyor_mu() {
 test_rapor_fonksiyonu_gecerli_kare_cikti_uretiyor_mu() {
 	./mgm-radar.sh rapor -i 6 -f kare -d test/ -s 2>&1 >/dev/null
 
-	cikti_dosyasi="test/6_rapor.jpg"
+	cikti_dosyasi="test/6-rapor.jpg"
 
 	dosya_olmali "$cikti_dosyasi"
 	resim_turu_esit_olmali "$cikti_dosyasi" "JPEG"
@@ -305,9 +305,9 @@ test_rapor_fonksiyonu_gecerli_kare_cikti_uretiyor_mu() {
 }
 
 test_rapor_fonksiyonu_gecerli_dikey_cikti_uretiyor_mu() {
-	./mgm-radar.sh rapor -i 6 -f dikey -d test/ -s 2>&1 >/dev/null
+	./mgm-radar.sh rapor -i 34 -f dikey -d test/ -s 2>&1 >/dev/null
 
-	cikti_dosyasi="test/6_rapor.jpg"
+	cikti_dosyasi="test/34-rapor.jpg"
 
 	dosya_olmali "$cikti_dosyasi"
 	resim_turu_esit_olmali "$cikti_dosyasi" "JPEG"
@@ -317,9 +317,9 @@ test_rapor_fonksiyonu_gecerli_dikey_cikti_uretiyor_mu() {
 }
 
 test_rapor_fonksiyonu_gecerli_yatay_cikti_uretiyor_mu() {
-	./mgm-radar.sh rapor -i 6 -f yatay -d test/ -s 2>&1 >/dev/null
+	./mgm-radar.sh rapor -i 35 -f yatay -d test/ -s 2>&1 >/dev/null
 
-	cikti_dosyasi="test/6_rapor.jpg"
+	cikti_dosyasi="test/35-rapor.jpg"
 
 	dosya_olmali "$cikti_dosyasi"
 	resim_turu_esit_olmali "$cikti_dosyasi" "JPEG"
@@ -336,6 +336,26 @@ test_girintileme_sorunu_olmamali() {
 	esit_olmali "$yardim" ""
 	esit_olmali "$versiyon" ""
 	esit_olmali "$radarlar" ""
+}
+
+test_kalsin_argumanı_yoksa_goruntuler_siliniyor_olmali() {
+	./mgm-radar.sh hareketli -i 6 -u vil -d test/ -s 2>&1 >/dev/null
+
+	dosya_listesi=$(ls test/)
+
+	icermiyor_olmali "$dosya_listesi" "6-vil1.jpg"
+	icermiyor_olmali "$dosya_listesi" "6-vil7.jpg"
+	icermiyor_olmali "$dosya_listesi" "6-vil15.jpg"
+}
+
+test_kalsin_argumanı_varsa_goruntuler_silinmiyor_olmali() {
+	./mgm-radar.sh rapor -i 34 -d test/ -s -k 2>&1 >/dev/null
+
+	dosya_listesi=$(ls test/)
+
+	iceriyor_olmali "$dosya_listesi" "34-ppi.jpg"
+	iceriyor_olmali "$dosya_listesi" "34-vil.jpg"
+	iceriyor_olmali "$dosya_listesi" "34-max.jpg"
 }
 
 # Bu test bazı teknik zorluklardan dolayı devre dışı bırakılmıştır
@@ -364,7 +384,7 @@ for fonk in $(declare -F | cut -d' ' -f3 | grep '^test_*'); do
 	eval "$fonk"
 	rm -rf {mgm-radar,test,hata-ayikla}.log test/*.{jpg,gif}
 	unset cikti cikti1 cikti2 radar_goruntusu urun dizin sadece_indir il_kodu \
-				kontroller alkomutlar yardim versiyon radarlar
+				kontroller alkomutlar yardim versiyon radarlar cikti_dosyasi dosya_listesi
 done
 rm -rf test/
 
