@@ -289,9 +289,10 @@ rapor() {
 		sondurum "$il_kodu" "$urun" "${dizin%%/}"
 	done
 
-	local cikti="${dizin}/${il_kodu}_rapor.jpg"
+	local dosya_onek="${dizin}/${il_kodu}"
+	local cikti="${dosya_onek}-rapor.jpg"
 	if LC_ALL=en_US.UTF montage -mode concatenate -tile ${format}x \
-					 "${indirme_dizini}${il_kodu}-"{ppi,vil,max,rzg}.jpg "$cikti" \
+					 "${dosya_onek}-"{ppi,vil,max,rzg}.jpg "$cikti" \
 					 2>"$hata_raporu"; then
 		INDIRILEN_DOSYA="$cikti"
 		echo "${onek}${cikti}: Radar ürünleri raporu oluşturuldu."

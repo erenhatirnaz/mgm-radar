@@ -295,7 +295,7 @@ test_formatlar_sayilara_cevriliyor_mu() {
 test_rapor_fonksiyonu_gecerli_kare_cikti_uretiyor_mu() {
 	./mgm-radar.sh rapor -i 6 -f kare -d test/ -s 2>&1 >/dev/null
 
-	cikti_dosyasi="test/6_rapor.jpg"
+	cikti_dosyasi="test/6-rapor.jpg"
 
 	dosya_olmali "$cikti_dosyasi"
 	resim_turu_esit_olmali "$cikti_dosyasi" "JPEG"
@@ -307,7 +307,7 @@ test_rapor_fonksiyonu_gecerli_kare_cikti_uretiyor_mu() {
 test_rapor_fonksiyonu_gecerli_dikey_cikti_uretiyor_mu() {
 	./mgm-radar.sh rapor -i 34 -f dikey -d test/ -s 2>&1 >/dev/null
 
-	cikti_dosyasi="test/34_rapor.jpg"
+	cikti_dosyasi="test/34-rapor.jpg"
 
 	dosya_olmali "$cikti_dosyasi"
 	resim_turu_esit_olmali "$cikti_dosyasi" "JPEG"
@@ -319,7 +319,7 @@ test_rapor_fonksiyonu_gecerli_dikey_cikti_uretiyor_mu() {
 test_rapor_fonksiyonu_gecerli_yatay_cikti_uretiyor_mu() {
 	./mgm-radar.sh rapor -i 35 -f yatay -d test/ -s 2>&1 >/dev/null
 
-	cikti_dosyasi="test/35_rapor.jpg"
+	cikti_dosyasi="test/35-rapor.jpg"
 
 	dosya_olmali "$cikti_dosyasi"
 	resim_turu_esit_olmali "$cikti_dosyasi" "JPEG"
