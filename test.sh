@@ -305,9 +305,9 @@ test_rapor_fonksiyonu_gecerli_kare_cikti_uretiyor_mu() {
 }
 
 test_rapor_fonksiyonu_gecerli_dikey_cikti_uretiyor_mu() {
-	./mgm-radar.sh rapor -i 6 -f dikey -d test/ -s 2>&1 >/dev/null
+	./mgm-radar.sh rapor -i 34 -f dikey -d test/ -s 2>&1 >/dev/null
 
-	cikti_dosyasi="test/6_rapor.jpg"
+	cikti_dosyasi="test/34_rapor.jpg"
 
 	dosya_olmali "$cikti_dosyasi"
 	resim_turu_esit_olmali "$cikti_dosyasi" "JPEG"
@@ -317,9 +317,9 @@ test_rapor_fonksiyonu_gecerli_dikey_cikti_uretiyor_mu() {
 }
 
 test_rapor_fonksiyonu_gecerli_yatay_cikti_uretiyor_mu() {
-	./mgm-radar.sh rapor -i 6 -f yatay -d test/ -s 2>&1 >/dev/null
+	./mgm-radar.sh rapor -i 35 -f yatay -d test/ -s 2>&1 >/dev/null
 
-	cikti_dosyasi="test/6_rapor.jpg"
+	cikti_dosyasi="test/35_rapor.jpg"
 
 	dosya_olmali "$cikti_dosyasi"
 	resim_turu_esit_olmali "$cikti_dosyasi" "JPEG"
@@ -384,7 +384,7 @@ for fonk in $(declare -F | cut -d' ' -f3 | grep '^test_*'); do
 	eval "$fonk"
 	rm -rf {mgm-radar,test,hata-ayikla}.log test/*.{jpg,gif}
 	unset cikti cikti1 cikti2 radar_goruntusu urun dizin sadece_indir il_kodu \
-				kontroller alkomutlar yardim versiyon radarlar dosya_listesi
+				kontroller alkomutlar yardim versiyon radarlar cikti_dosyasi dosya_listesi
 done
 rm -rf test/
 

@@ -8,6 +8,7 @@ yukle:
 	@echo "mgm-radar.sh: $(hedef) konumuna yüklenmiştir! \`$(betik) --yardim\` komutu ile test edebilrsiniz."
 
 test:
+	@rm -rf /tmp/mgm-radar
 	@bash test.sh
 
 kaldir:
