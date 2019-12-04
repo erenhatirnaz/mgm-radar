@@ -21,8 +21,10 @@ readonly versiyon_numarasi="0.3.1"
 readonly betik=$(readlink -f "$0")
 readonly ana_dizin=$(dirname "$betik")
 readonly indirme_dizini="/tmp/mgm-radar/"
-readonly hata_raporu="${ana_dizin}/mgm-radar.log"
 readonly baglanti="https://mgm.gov.tr/FTPDATA/uzal/radar"
+
+readonly hata_raporu="${ana_dizin}/mgm-radar.log"
+readonly gecici_rapor="/tmp/mgm-radar/hata.log"
 
 readonly onek="${betik_ismi}: "
 readonly hata="${onek}$(basename "$hata_raporu"): "
@@ -206,6 +208,17 @@ dizin_kontrol() {
 	fi
 }
 
+tarih_saat() { date +"%d/%m/%Y %H:%M:%S,%N"; }
+
+raporla() {
+	while IFS= read -r satir; do
+		if [[ -n $satir ]]; then
+			echo $(tarih_saat)": ${satir}">>"$hata_raporu"
+		fi
+	done < "$gecici_rapor"
+	rm -rf "$gecici_rapor"
+}
+
 sondurum() {
 	local il_kodu="$1"
 	local urun="$2"
@@ -222,10 +235,11 @@ sondurum() {
 	local indirme_baglantisi="${baglanti}/${il}/${il}${urun}15.jpg"
 	local dosya_yolu="${dizin}/${il_kodu}-${urun}.jpg"
 
-	if wget -O "${dosya_yolu}" "${indirme_baglantisi}" 2>"$hata_raporu"; then
+	if wget -O "${dosya_yolu}" "${indirme_baglantisi}" 2>"$gecici_rapor"; then
 		INDIRILEN_DOSYA="$dosya_yolu"
 		echo "${onek}${dosya_yolu}: Radar görüntüsü indirildi."
 	else
+		raporla
 		echo "${hata}Radar görüntüsü indirilirken hata oluştu." >&2
 		exit 1
 	fi
@@ -251,10 +265,11 @@ hareketli() {
 		dsy="${dosya_yolu}${i}.jpg"
 		bglnt="${indirme_baglantisi}${i}.jpg"
 		printf "%s indiriliyor..." "${dsy}"
-		if wget -O "$dsy" "$bglnt" 2>"$hata_raporu"; then
+		if wget -O "$dsy" "$bglnt" 2>"$gecici_rapor"; then
 			printf " Tamamlandı\\n"
 		else
 			echo
+			raporla
 			echo "${hata}Radar görüntüsü indirilirken hata oluştu." >&2
 			exit 1
 		fi
@@ -263,10 +278,11 @@ hareketli() {
 	echo "Hareketli GIF dosyasına dönüştürülüyor..."
 	gif_dosyasi="${dosya_yolu}.gif"
 	if LC_ALL=en_US.UTF convert "${dosya_yolu}"{1..15}".jpg" \
-					 -delay 20 -loop 0 "${gif_dosyasi}" 2>"$hata_raporu"; then
+					 -delay 20 -loop 0 "${gif_dosyasi}" 2>"$gecici_rapor"; then
 		INDIRILEN_DOSYA="${gif_dosyasi}"
 		echo "${onek}${dosya_yolu}.gif: Radar görüntüleri GIF olarak kaydedildi."
 	else
+		raporla
 		echo "${hata}GIF dosyası oluşturulması sırasında hata oluştu." >&2
 		exit 1
 	fi
@@ -293,10 +309,11 @@ rapor() {
 	local cikti="${dosya_onek}-rapor.jpg"
 	if LC_ALL=en_US.UTF montage -mode concatenate -tile ${format}x \
 					 "${dosya_onek}-"{ppi,vil,max,rzg}.jpg "$cikti" \
-					 2>"$hata_raporu"; then
+					 2>"$gecici_rapor"; then
 		INDIRILEN_DOSYA="$cikti"
 		echo "${onek}${cikti}: Radar ürünleri raporu oluşturuldu."
 	else
+		raporla
 		echo "${hata}Radar ürünleri raporu oluşturulması sırasında hata oluştu." >&2
 		exit 1
 	fi
@@ -305,7 +322,8 @@ rapor() {
 mkdir -p -- "${indirme_dizini}"
 
 # İnternet bağlantısı kontrolü
-if ! ping -c 1 -W 1 8.8.8.8 1>/dev/null 2>"$hata_raporu"; then
+if ! ping -c 1 -W 1 8.8.8.8 1>/dev/null 2>"$gecici_rapor"; then
+	raporla
 	echo "${hata}İnternet bağlantınız ile ilgili bir sorun oluştu." >&2
 	exit 1
 fi
@@ -394,11 +412,14 @@ if [[ "$ALT_KOMUT" =~ ^(hareketli|rapor)$ ]] && ! $KALSIN; then
 	echo "Radar görüntüsü oluşturmak için indirilen görüntüler silindi."
 fi
 
+rm -rf "$gecici_rapor"
+
 if [[ -n $INDIRILEN_DOSYA ]] && ! $SADECE_INDIR; then
-	if $goruntuleyici "$INDIRILEN_DOSYA" 1>/dev/null 2>"$hata_raporu"; then
+	if $goruntuleyici "$INDIRILEN_DOSYA" 1>/dev/null 2>"$gecici_rapor"; then
 		echo "${onek}${INDIRILEN_DOSYA}: \`${goruntuleyici}\` ile açıldı."
 		exit 0
 	else
+		raporla
 		echo "${hata}: \`${goruntuleyici}\` açılırken bir hata oluştu." >&2
 		exit 1
 	fi
