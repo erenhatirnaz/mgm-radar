@@ -358,6 +358,52 @@ test_kalsin_argumanı_varsa_goruntuler_silinmiyor_olmali() {
 	iceriyor_olmali "$dosya_listesi" "34-max.jpg"
 }
 
+# TODO: Testler iyileştirilecek. Bu şekilde pek içime sinmese de mock
+# sistemi olmadığı için başka bir alternatifim yok.
+test_sondurum_hata_raporlama_calisiyor_mu() {
+	sed 's/{indirme_baglantisi}/deneme/g'< mgm-radar.sh > test-radar.sh
+	bash test-radar.sh sondurum -i 34 -u ppi 2>/dev/null
+
+	dosya_olmali "mgm-radar.log"
+	cikti=$(cat "mgm-radar.log" | tail -n1)
+
+	iceriyor_olmali "$cikti" "Invalid host name."
+	rm -rf test-radar.sh
+}
+
+test_hareketli_hata_raporlama_calisiyor_mu() {
+	sed 's/{indirme_baglantisi}/deneme/g'< mgm-radar.sh > test-radar.sh
+	bash test-radar.sh hareketli -i 34 -u ppi 2>/dev/null 1>&2
+
+	dosya_olmali "mgm-radar.log"
+	cikti=$(cat "mgm-radar.log" | tail -n1)
+
+	iceriyor_olmali "$cikti" "unable to resolve host address"
+	rm -rf test-radar.sh
+}
+
+test_rapor_hata_raporlama_calisiyor_mu() {
+	sed 's/{indirme_baglantisi}/deneme/g'< mgm-radar.sh > test-radar.sh
+	bash test-radar.sh rapor -i 34 -u ppi 2>/dev/null 1>&2
+
+	dosya_olmali "mgm-radar.log"
+	cikti=$(cat "mgm-radar.log" | tail -n1)
+
+	iceriyor_olmali "$cikti" "Invalid host name."
+	rm -rf test-radar.sh
+}
+
+test_baglanti_kontrol_hata_raporlama_calisiyor_mu() {
+	sed 's/8.8.8.8/deneme/g'< mgm-radar.sh > test-radar.sh
+	bash test-radar.sh 2>/dev/null 1>&2
+
+	dosya_olmali "mgm-radar.log"
+	cikti=$(cat "mgm-radar.log" | tail -n1)
+
+	iceriyor_olmali "$cikti" "Name or service not known"
+	rm -rf test-radar.sh
+}
+
 # Bu test bazı teknik zorluklardan dolayı devre dışı bırakılmıştır
 # test_hata_mesajlari_loglaniyor_mu() {
 # 	unshare -rn ./mgm-radar.sh 2>/dev/null
