@@ -214,7 +214,6 @@ test_urun_isimleri_kisaltildi_mi() {
 		esit_olmali "$urun" "$kisa"
 
 		unset kisa kuzun urun
-		rm -rf test.log
 	done
 }
 
@@ -287,7 +286,6 @@ test_formatlar_sayilara_cevriliyor_mu() {
 
 		esit_olmali "$frmt" "${formatlar[$format]}"
 
-		rm test.log
 		unset frmt format
 	done
 }
@@ -358,6 +356,52 @@ test_kalsin_argumanı_varsa_goruntuler_silinmiyor_olmali() {
 	iceriyor_olmali "$dosya_listesi" "34-max.jpg"
 }
 
+# TODO: Testler iyileştirilecek. Bu şekilde pek içime sinmese de mock
+# sistemi olmadığı için başka bir alternatifim yok.
+test_sondurum_hata_raporlama_calisiyor_mu() {
+	sed 's/{indirme_baglantisi}/deneme/g'< mgm-radar.sh > test-radar.sh
+	bash test-radar.sh sondurum -i 34 -u ppi 2>/dev/null
+
+	dosya_olmali "mgm-radar.log"
+	cikti=$(cat "mgm-radar.log" | tail -n1)
+
+	iceriyor_olmali "$cikti" "Invalid host name."
+	rm -rf test-radar.sh
+}
+
+test_hareketli_hata_raporlama_calisiyor_mu() {
+	sed 's/{indirme_baglantisi}/deneme/g'< mgm-radar.sh > test-radar.sh
+	bash test-radar.sh hareketli -i 34 -u ppi 2>/dev/null 1>&2
+
+	dosya_olmali "mgm-radar.log"
+	cikti=$(cat "mgm-radar.log" | tail -n1)
+
+	iceriyor_olmali "$cikti" "unable to resolve host address"
+	rm -rf test-radar.sh
+}
+
+test_rapor_hata_raporlama_calisiyor_mu() {
+	sed 's/{indirme_baglantisi}/deneme/g'< mgm-radar.sh > test-radar.sh
+	bash test-radar.sh rapor -i 34 -u ppi 2>/dev/null 1>&2
+
+	dosya_olmali "mgm-radar.log"
+	cikti=$(cat "mgm-radar.log" | tail -n1)
+
+	iceriyor_olmali "$cikti" "Invalid host name."
+	rm -rf test-radar.sh
+}
+
+test_baglanti_kontrol_hata_raporlama_calisiyor_mu() {
+	sed 's/8.8.8.8/deneme/g'< mgm-radar.sh > test-radar.sh
+	bash test-radar.sh 2>/dev/null 1>&2
+
+	dosya_olmali "mgm-radar.log"
+	cikti=$(cat "mgm-radar.log" | tail -n1)
+
+	iceriyor_olmali "$cikti" "deneme"
+	rm -rf test-radar.sh
+}
+
 # Bu test bazı teknik zorluklardan dolayı devre dışı bırakılmıştır
 # test_hata_mesajlari_loglaniyor_mu() {
 # 	unshare -rn ./mgm-radar.sh 2>/dev/null
@@ -378,13 +422,17 @@ fi
 # Test sürecinde radar görüntüleri test/ dizinine indirilecek
 mkdir -p test
 
+# Testler tekrar çalıştırılınca önceden kalan loglar temizlenecek
+rm -rf *.log
+
 # Test çalıştırıcı
 for fonk in $(declare -F | cut -d' ' -f3 | grep '^test_*'); do
 	echo "$fonk"
 	eval "$fonk"
-	rm -rf {mgm-radar,test,hata-ayikla}.log test/*.{jpg,gif}
+	rm -rf test/*.{jpg,gif}
 	unset cikti cikti1 cikti2 radar_goruntusu urun dizin sadece_indir il_kodu \
 				kontroller alkomutlar yardim versiyon radarlar cikti_dosyasi dosya_listesi
+	[ -e test.log ] && mv "test.log" "${fonk}.log"
 done
 rm -rf test/
 
@@ -394,8 +442,10 @@ echo -e "\\n${MAVI}$TEST_SAYISI${TEMIZLE} test çalıştırıldı.\\n"
 
 if [[ $HATA_SAYISI -gt 0 ]]; then
 	echo -e "${KIRMIZI}BAŞARISIZ (Hata Sayısı=${HATA_SAYISI})${TEMIZLE}"
+	echo -e "${KIRMIZI}Detaylar için log dosyalarını inceleyin.${TEMIZLE}"
 	exit 1
 else
 	echo -e "${YESIL}BAŞARILI${TEMIZLE}"
+	rm -rf *.log
 	exit 0
 fi
