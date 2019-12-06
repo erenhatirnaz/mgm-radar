@@ -214,7 +214,6 @@ test_urun_isimleri_kisaltildi_mi() {
 		esit_olmali "$urun" "$kisa"
 
 		unset kisa kuzun urun
-		rm -rf test.log
 	done
 }
 
@@ -287,7 +286,6 @@ test_formatlar_sayilara_cevriliyor_mu() {
 
 		esit_olmali "$frmt" "${formatlar[$format]}"
 
-		rm test.log
 		unset frmt format
 	done
 }
@@ -424,13 +422,17 @@ fi
 # Test sürecinde radar görüntüleri test/ dizinine indirilecek
 mkdir -p test
 
+# Testler tekrar çalıştırılınca önceden kalan loglar temizlenecek
+rm -rf *.log
+
 # Test çalıştırıcı
 for fonk in $(declare -F | cut -d' ' -f3 | grep '^test_*'); do
 	echo "$fonk"
 	eval "$fonk"
-	rm -rf {mgm-radar,test,hata-ayikla}.log test/*.{jpg,gif}
+	rm -rf test/*.{jpg,gif}
 	unset cikti cikti1 cikti2 radar_goruntusu urun dizin sadece_indir il_kodu \
 				kontroller alkomutlar yardim versiyon radarlar cikti_dosyasi dosya_listesi
+	[ -e test.log ] && mv "test.log" "${fonk}.log"
 done
 rm -rf test/
 
@@ -440,8 +442,10 @@ echo -e "\\n${MAVI}$TEST_SAYISI${TEMIZLE} test çalıştırıldı.\\n"
 
 if [[ $HATA_SAYISI -gt 0 ]]; then
 	echo -e "${KIRMIZI}BAŞARISIZ (Hata Sayısı=${HATA_SAYISI})${TEMIZLE}"
+	echo -e "${KIRMIZI}Detaylar için log dosyalarını inceleyin.${TEMIZLE}"
 	exit 1
 else
 	echo -e "${YESIL}BAŞARILI${TEMIZLE}"
+	rm -rf *.log
 	exit 0
 fi
