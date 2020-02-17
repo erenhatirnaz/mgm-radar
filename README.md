@@ -14,7 +14,7 @@ düzenleyebilirsiniz.
 Bu betik, sadece GNU/Linux dağıtımlarında kullanılabilir. Windows sistemlerde
 bash betiklerini çalıştırabilmek mümkünmüş fakat benim test etme imkanım olmadı.
 
-[Bu betik ile ilgili detaylı blog yazısını için tıklayın.](https://wp.me/p14nDk-oF)
+[Bu betik ile ilgili detaylı blog yazısı için tıklayın.](https://wp.me/p14nDk-oF)
 Ayrıca programlama alanında bilgili biri değilseniz ve bir sitede rastlayarak
 buraya geldiyseniz de blog yazımdan devam etmenizi öneririm. Orada programlamadan
 anlamayan kişiler için daha açıklayıcı olacak şekilde yazdım.
@@ -42,10 +42,10 @@ $ make yukle
 
 **NOT:** `make yukle` komutu bu depo içerisinde bulunan `mgm-radar.sh` dosyasının
 sembolik bir bağlantısını (bir nevi kopyasını) `~/.local/bin/mgm-radar` konumuna
-kaydeder ve böylece terminalizinde her yerden ulaşabilme olanağı sağlar. Eğer
+kaydeder ve böylece terminalinizde her yerden ulaşabilme olanağı sağlar. Eğer
 siz kişisel betiklerinizi farklı bir dizinde saklıyorsanız
 (mesela ben `~/scripts/` konumunu kullanıyorum), o zaman `Makefile` dosyası
-içerisindeki 2.satırdaki `hedef` değişkenini düzenleyebilirsiniz.
+içerisindeki 2. satırdaki `hedef` değişkenini düzenleyebilirsiniz.
 
 ### Kaldırmak için:
 ```sh
@@ -85,7 +85,7 @@ her satırda bir görüntü için `-f dikey`, bir satırda tüm görüntüleri
 birleştirmek için `-f yatay` argümanlarını kullanabilirsiniz.
 
 Radar görüntüleri varsayılan olarak `/tmp/mgm-radar/` konumuna indirilir. Burası
-geçiçi bir dizidir ve bilgisayarınızı kapattığınızda silinir. Kalıcı olarak başka
+geçiçi bir dizindir ve bilgisayarınızı kapattığınızda silinir. Kalıcı olarak başka
 bir dizine indirmek için, kısa şekliyle `-d`, uzun şekliyle `--dizin`
 parametresini kullanabilirsiniz. Örnek:
 ```sh
