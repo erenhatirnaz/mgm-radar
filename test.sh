@@ -392,7 +392,7 @@ test_rapor_hata_raporlama_calisiyor_mu() {
 }
 
 test_baglanti_kontrol_hata_raporlama_calisiyor_mu() {
-	sed 's/8.8.8.8/deneme/g'< mgm-radar.sh > test-radar.sh
+	sed 's/1.1.1.1/deneme/g'< mgm-radar.sh > test-radar.sh
 	bash test-radar.sh 2>/dev/null 1>&2
 
 	dosya_olmali "mgm-radar.log"
@@ -411,7 +411,7 @@ test_baglanti_kontrol_hata_raporlama_calisiyor_mu() {
 # }
 
 # İnternet bağlantısı kontrolü
-if ! ping -c 1 -W 1 8.8.8.8 &>/dev/null; then
+if ! nc -z -w3 1.1.1.1 53 &>/dev/null; then
 	cat <<-EOF >&2
 	test.sh: İnternet bağlantınız ile ilgili bir sorun oluştu. Testlerin düzgün
 	         çalışabilmesi için internet bağlantısı gereklidir.

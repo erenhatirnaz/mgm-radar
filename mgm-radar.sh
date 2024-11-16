@@ -322,7 +322,7 @@ rapor() {
 mkdir -p -- "${indirme_dizini}"
 
 # İnternet bağlantısı kontrolü
-if ! ping -c 1 -W 1 8.8.8.8 1>/dev/null 2>"$gecici_rapor"; then
+if ! nc -z -w3 1.1.1.1 53 1>/dev/null 2>"$gecici_rapor"; then
 	raporla
 	echo "${hata}İnternet bağlantınız ile ilgili bir sorun oluştu." >&2
 	exit 1
