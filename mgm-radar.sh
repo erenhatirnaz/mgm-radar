@@ -349,12 +349,12 @@ while [[ $# -gt 0 ]]
 do
 	case $1 in
 		-i|--il-kodu)
-			IL_KODU="${2,,}"
+			IL_KODU=$(echo "$2" | tr '[:upper:]' '[:lower:]')
 			shift
 			shift
 			;;
 		-u|--urun)
-			URUN="${2,,}"
+			URUN=$(echo "$2" | tr '[:upper:]' '[:lower:]')
 			# mgm.gov.tr 'deki dizin yapısından dolayı dönüştürülüyor:
 			URUN=$(echo "$URUN" | sed -e 's/^maks$/max/g')
 			URUN=$(echo "$URUN" | sed -e 's/^ruzgar$/rzg/g')
