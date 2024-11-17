@@ -1,5 +1,5 @@
 # ![mgm-radar](./gorseller/logo.gif)
-[![derlenme](https://travis-ci.org/erenhatirnaz/mgm-radar.svg?branch=master)](https://travis-ci.org/erenhatirnaz/mgm-radar)
+![derlenme](https://github.com/erenhatirnaz/mgm-radar/actions/workflows/test.yml/badge.svg)
 [![versiyon](https://img.shields.io/github/release/erenhatirnaz/mgm-radar.svg?label=versiyon)](https://github.com/erenhatirnaz/mgm-radar/releases/latest)
 [![lisans](https://img.shields.io/github/license/erenhatirnaz/mgm-radar.svg?label=lisans)](https://github.com/erenhatirnaz/mgm-radar/blob/master/LICENSE)
 
