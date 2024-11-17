@@ -7,8 +7,18 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        bash-version: [4.4, 5.0, 5.1, 5.2]
+
     steps:
     - uses: actions/checkout@v4
+
+    - name: Install specific Bash version
+      run: |
+        sudo apt update
+        sudo apt install -y bash=${{ matrix.bash-version }}*
+        bash --version
 
     - name: Install dependencies
       run: sudo apt install -y wget imagemagick
