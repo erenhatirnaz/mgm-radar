@@ -6,6 +6,9 @@ YESIL='\033[1;32m'
 MAVI='\033[1;36m'
 TEMIZLE='\033[0m'
 
+MOCK_DIR=$(grep -oP 'MOCK_DIR := "\K[^"]+' Makefile)
+PORT=$(grep -oP 'PORT := \K[0-9]+' Makefile)
+
 HATA_SAYISI=0
 hata() {
 	echo -e "  ${KIRMIZI}${*}${TEMIZLE}" >&2
@@ -137,7 +140,7 @@ resim_uzunlugu_esit_olmali() {
 
 # Testler
 test_varsayilan_indirme_klasoru_olustu_mu() {
-	./mgm-radar.sh > /dev/null
+	./test-radar.sh > /dev/null
 
 	dizin_olmali "/tmp/mgm-radar/"
 }
@@ -146,7 +149,7 @@ test_gecersiz_altkomut_hatası_veriyor_mu() {
 	altkomutlar=( deneme 123 sondurum2 hareketli3 radarlar2 -v1 --version2 -y5 --yardim54 )
 
 	for altkomut in "${altkomutlar[@]}"; do
-		cikti=$(./mgm-radar.sh "$altkomut" 2>&1)
+		cikti=$(./test-radar.sh "$altkomut" 2>&1)
 
 		iceriyor_olmali "$cikti" "Geçersiz"
 
@@ -158,7 +161,7 @@ test_gecerli_altkomutlar_kabul_ediliyor_mu() {
 	altkomutlar=( radarlar sondurum hareketli rapor -y --yardim -v --versiyon )
 
 	for altkomut in "${altkomutlar[@]}"; do
-		cikti=$(./mgm-radar.sh "$altkomut" 2>&1)
+		cikti=$(./test-radar.sh "$altkomut" 2>&1)
 
 		icermiyor_olmali "$cikti" "Geçersiz"
 
@@ -167,7 +170,7 @@ test_gecerli_altkomutlar_kabul_ediliyor_mu() {
 }
 
 test_arguman_isleyici_calisiyor_mu() {
-	bash -x mgm-radar.sh sondurum -i 6 -u vil -d test/ -f yatay -s 1>&2 2>test.log >/dev/null
+	bash -x test-radar.sh sondurum -i 6 -u vil -d test/ -f yatay -s 1>&2 2>test.log >/dev/null
 
 	il_kodu=$(grep IL_KODU "test.log" | cut -d= -f2)
 	urun=$(grep URUN "test.log" | cut -d= -f2 | head -n1)
@@ -183,21 +186,21 @@ test_arguman_isleyici_calisiyor_mu() {
 }
 
 test_il_kontrol_fonksiyonu_calisiyor_mu() {
-	cikti=$(./mgm-radar.sh sondurum -i 2>&1)
+	cikti=$(./test-radar.sh sondurum -i 2>&1)
 
 	iceriyor_olmali "$cikti" "zorunludur"
 }
 
 test_urun_kontrol_fonksiyonu_calisiyor_mu() {
-	cikti1=$(./mgm-radar.sh sondurum -i 6 -u 2>&1)
-	cikti2=$(./mgm-radar.sh sondurum -i 6 -u asd 2>&1)
+	cikti1=$(./test-radar.sh sondurum -i 6 -u 2>&1)
+	cikti2=$(./test-radar.sh sondurum -i 6 -u asd 2>&1)
 
 	iceriyor_olmali "$cikti1" "zorunludur"
 	iceriyor_olmali "$cikti2" "Geçersiz"
 }
 
 test_dizin_kontrol_fonksiyonu_casiliyor_mu() {
-	cikti=$(./mgm-radar.sh sondurum -i 6 -u vil -d test123/ 2>&1 >/dev/null)
+	cikti=$(./test-radar.sh sondurum -i 6 -u vil -d test123/ 2>&1 >/dev/null)
 
 	iceriyor_olmali "$cikti" "Böyle bir dizin yok"
 }
@@ -207,7 +210,7 @@ test_urun_isimleri_kisaltildi_mi() {
 
 	for uzun in "${!kontroller[@]}"; do
 		kisa="${kontroller[$uzun]}"
-		bash -x mgm-radar.sh sondurum -s -i 6 -u "$uzun" -d test/ 1>&2 2>test.log > /dev/null
+		bash -x test-radar.sh sondurum -s -i 6 -u "$uzun" -d test/ 1>&2 2>test.log > /dev/null
 
 		urun=$(grep URUN "test.log" | cut -d= -f2 | sort -r | head -1)
 
@@ -218,7 +221,7 @@ test_urun_isimleri_kisaltildi_mi() {
 }
 
 test_il_kodu_0_ise_urun_ppi_olmali() {
-	yes e | bash -x mgm-radar.sh sondurum -i 0 -u vil -s -d test/ 1>&2 2>test.log > /dev/null
+	yes e | bash -x test-radar.sh sondurum -i 0 -u vil -s -d test/ 1>&2 2>test.log > /dev/null
 
 	urun=$(grep URUN "test.log" | cut -d= -f2 | sort | head -1)
 
@@ -226,13 +229,13 @@ test_il_kodu_0_ise_urun_ppi_olmali() {
 }
 
 test_il_kodu_gecersiz_hatasi_veriyor_mu() {
-	cikti=$(./mgm-radar.sh sondurum -i 123 -u vil 2>&1 >/dev/null)
+	cikti=$(./test-radar.sh sondurum -i 123 -u vil 2>&1 >/dev/null)
 
 	iceriyor_olmali "$cikti" "radarı bulunmuyor"
 }
 
 test_sondurum_fonksiyonu_gecerli_jpeg_indiriyor_mu() {
-	./mgm-radar.sh sondurum -i 6 -u ppi -s -d test/ >/dev/null 2>&1
+	./test-radar.sh sondurum -i 6 -u ppi -s -d test/ >/dev/null 2>&1
 
 	radar_goruntusu="test/6-ppi.jpg"
 
@@ -242,7 +245,7 @@ test_sondurum_fonksiyonu_gecerli_jpeg_indiriyor_mu() {
 }
 
 test_hareketli_fonksiyonu_gecerli_gif_olusturuyor_mu() {
-	./mgm-radar.sh hareketli -i 6 -u ppi -s -d test/ >/dev/null 2>&1
+	./test-radar.sh hareketli -i 6 -u ppi -s -d test/ >/dev/null 2>&1
 
 	radar_goruntusu="test/6-ppi.gif"
 
@@ -253,25 +256,19 @@ test_hareketli_fonksiyonu_gecerli_gif_olusturuyor_mu() {
 }
 
 test_radarlar_fonksiyonu_liste_yazdiriyor_mu() {
-	cikti=$(./mgm-radar.sh radarlar | head -1)
+	cikti=$(./test-radar.sh radarlar | head -1)
 
 	iceriyor_olmali "$cikti" "bulunan iller"
 }
 
-# Bu test bazı teknik zorluklardan dolayı devre dışı bırakılmıştır
-# test_internet_baglantisi_yoksa_hata_veriyor_mu() {
-# 	cikti=$(unshare -rn ./mgm-radar.sh -d test/ 2>&1)
-# 	iceriyor_olmali "$cikti" "bir sorun oluştu"
-# }
-
 test_sadece_indir_aciksa_resim_gostermiyor_mu() {
-	cikti=$(./mgm-radar.sh sondurum -i 6 -u vil -d test/ -s 2>&1)
+	cikti=$(./test-radar.sh sondurum -i 6 -u vil -d test/ -s 2>&1)
 
 	icermiyor_olmali "$cikti" "\`xdg-open\` ile açıldı"
 }
 
 test_rapor_fonksiyonu_gecersiz_format_hatasi_veriyor_mu() {
-	cikti=$(./mgm-radar.sh rapor -i 6 -f deneme -s 2>&1)
+	cikti=$(./test-radar.sh rapor -i 6 -f deneme -s 2>&1)
 
 	iceriyor_olmali "$cikti" "Geçersiz"
 }
@@ -280,7 +277,7 @@ test_formatlar_sayilara_cevriliyor_mu() {
 	declare -A formatlar=( [kare]=2 [dikey]=1 [yatay]=4 )
 
 	for format in "${!formatlar[@]}"; do
-		bash -x mgm-radar.sh rapor -i 6 -f "$format" -s -d test/ 1>&2 2>test.log > /dev/null
+		bash -x test-radar.sh rapor -i 6 -f "$format" -s -d test/ 1>&2 2>test.log > /dev/null
 
 		frmt=$(grep FORMAT test.log | awk 'NR==5' | cut -d= -f2)
 
@@ -291,7 +288,7 @@ test_formatlar_sayilara_cevriliyor_mu() {
 }
 
 test_rapor_fonksiyonu_gecerli_kare_cikti_uretiyor_mu() {
-	./mgm-radar.sh rapor -i 6 -f kare -d test/ -s 2>&1 >/dev/null
+	./test-radar.sh rapor -i 6 -f kare -d test/ -s 2>&1 >/dev/null
 
 	cikti_dosyasi="test/6-rapor.jpg"
 
@@ -303,7 +300,7 @@ test_rapor_fonksiyonu_gecerli_kare_cikti_uretiyor_mu() {
 }
 
 test_rapor_fonksiyonu_gecerli_dikey_cikti_uretiyor_mu() {
-	./mgm-radar.sh rapor -i 34 -f dikey -d test/ -s 2>&1 >/dev/null
+	./test-radar.sh rapor -i 34 -f dikey -d test/ -s 2>&1 >/dev/null
 
 	cikti_dosyasi="test/34-rapor.jpg"
 
@@ -315,7 +312,7 @@ test_rapor_fonksiyonu_gecerli_dikey_cikti_uretiyor_mu() {
 }
 
 test_rapor_fonksiyonu_gecerli_yatay_cikti_uretiyor_mu() {
-	./mgm-radar.sh rapor -i 35 -f yatay -d test/ -s 2>&1 >/dev/null
+	./test-radar.sh rapor -i 35 -f yatay -d test/ -s 2>&1 >/dev/null
 
 	cikti_dosyasi="test/35-rapor.jpg"
 
@@ -327,9 +324,9 @@ test_rapor_fonksiyonu_gecerli_yatay_cikti_uretiyor_mu() {
 }
 
 test_girintileme_sorunu_olmamali() {
-	yardim=$(./mgm-radar.sh --yardim | grep -P '\t')
-	versiyon=$(./mgm-radar.sh --versiyon | grep -P '\t')
-	radarlar=$(./mgm-radar.sh radarlar | grep -P '\t')
+	yardim=$(./test-radar.sh --yardim | grep -P '\t')
+	versiyon=$(./test-radar.sh --versiyon | grep -P '\t')
+	radarlar=$(./test-radar.sh radarlar | grep -P '\t')
 
 	esit_olmali "$yardim" ""
 	esit_olmali "$versiyon" ""
@@ -337,7 +334,7 @@ test_girintileme_sorunu_olmamali() {
 }
 
 test_kalsin_argumanı_yoksa_goruntuler_siliniyor_olmali() {
-	./mgm-radar.sh hareketli -i 6 -u vil -d test/ -s 2>&1 >/dev/null
+	./test-radar.sh hareketli -i 6 -u vil -d test/ -s 2>&1 >/dev/null
 
 	dosya_listesi=$(ls test/)
 
@@ -347,7 +344,7 @@ test_kalsin_argumanı_yoksa_goruntuler_siliniyor_olmali() {
 }
 
 test_kalsin_argumanı_varsa_goruntuler_silinmiyor_olmali() {
-	./mgm-radar.sh rapor -i 34 -d test/ -s -k 2>&1 >/dev/null
+	./test-radar.sh rapor -i 34 -d test/ -s -k 2>&1 >/dev/null
 
 	dosya_listesi=$(ls test/)
 
@@ -356,74 +353,60 @@ test_kalsin_argumanı_varsa_goruntuler_silinmiyor_olmali() {
 	iceriyor_olmali "$dosya_listesi" "34-max.jpg"
 }
 
-# TODO: Testler iyileştirilecek. Bu şekilde pek içime sinmese de mock
-# sistemi olmadığı için başka bir alternatifim yok.
 test_sondurum_hata_raporlama_calisiyor_mu() {
-	sed 's/{indirme_baglantisi}/deneme/g'< mgm-radar.sh > test-radar.sh
+  mv ${MOCK_DIR}/FTPDATA/uzal/radar/ist/istppi15.jpg \
+     ${MOCK_DIR}/FTPDATA/uzal/radar/ist/istppi15.jpg.bak
 	bash test-radar.sh sondurum -i 34 -u ppi 2>/dev/null
 
 	dosya_olmali "mgm-radar.log"
 	cikti=$(cat "mgm-radar.log" | tail -n1)
 
-	iceriyor_olmali "$cikti" "Invalid host name."
-	rm -rf test-radar.sh
+	iceriyor_olmali "$cikti" "File not found."
+  mv ${MOCK_DIR}/FTPDATA/uzal/radar/ist/istppi15.jpg.bak \
+     ${MOCK_DIR}/FTPDATA/uzal/radar/ist/istppi15.jpg
 }
 
 test_hareketli_hata_raporlama_calisiyor_mu() {
-	sed 's/{indirme_baglantisi}/deneme/g'< mgm-radar.sh > test-radar.sh
+  mv ${MOCK_DIR}/FTPDATA/uzal/radar/ist/istppi15.jpg \
+     ${MOCK_DIR}/FTPDATA/uzal/radar/ist/istppi15.jpg.bak
 	bash test-radar.sh hareketli -i 34 -u ppi 2>/dev/null 1>&2
 
 	dosya_olmali "mgm-radar.log"
 	cikti=$(cat "mgm-radar.log" | tail -n1)
 
-	iceriyor_olmali "$cikti" "unable to resolve host address"
-	rm -rf test-radar.sh
+	iceriyor_olmali "$cikti" "File not found."
+  mv ${MOCK_DIR}/FTPDATA/uzal/radar/ist/istppi15.jpg.bak \
+     ${MOCK_DIR}/FTPDATA/uzal/radar/ist/istppi15.jpg
 }
 
 test_rapor_hata_raporlama_calisiyor_mu() {
-	sed 's/{indirme_baglantisi}/deneme/g'< mgm-radar.sh > test-radar.sh
+  mv ${MOCK_DIR}/FTPDATA/uzal/radar/ist/istppi15.jpg \
+     ${MOCK_DIR}/FTPDATA/uzal/radar/ist/istppi15.jpg.bak
 	bash test-radar.sh rapor -i 34 -u ppi 2>/dev/null 1>&2
 
 	dosya_olmali "mgm-radar.log"
 	cikti=$(cat "mgm-radar.log" | tail -n1)
 
-	iceriyor_olmali "$cikti" "Invalid host name."
-	rm -rf test-radar.sh
+	iceriyor_olmali "$cikti" "File not found."
+  mv ${MOCK_DIR}/FTPDATA/uzal/radar/ist/istppi15.jpg.bak \
+     ${MOCK_DIR}/FTPDATA/uzal/radar/ist/istppi15.jpg
 }
-
-test_baglanti_kontrol_hata_raporlama_calisiyor_mu() {
-	sed 's/1.1.1.1/deneme/g'< mgm-radar.sh > test-radar.sh
-	bash test-radar.sh 2>/dev/null 1>&2
-
-	dosya_olmali "mgm-radar.log"
-	cikti=$(cat "mgm-radar.log" | tail -n1)
-
-	iceriyor_olmali "$cikti" "deneme"
-	rm -rf test-radar.sh
-}
-
-# Bu test bazı teknik zorluklardan dolayı devre dışı bırakılmıştır
-# test_hata_mesajlari_loglaniyor_mu() {
-# 	unshare -rn ./mgm-radar.sh 2>/dev/null
-# 	cikti=$(cat "mgm-radar.log")
-# 	dosya_olmali "mgm-radar.log"
-# 	iceriyor_olmali "$cikti" "Network is unreachable"
-# }
-
-# İnternet bağlantısı kontrolü
-if ! nc -z -w3 1.1.1.1 53 &>/dev/null; then
-	cat <<-EOF >&2
-	test.sh: İnternet bağlantınız ile ilgili bir sorun oluştu. Testlerin düzgün
-	         çalışabilmesi için internet bağlantısı gereklidir.
-	EOF
-	exit 1
-fi
 
 # Test sürecinde radar görüntüleri test/ dizinine indirilecek
 mkdir -p test
 
 # Testler tekrar çalıştırılınca önceden kalan loglar temizlenecek
 rm -rf *.log
+
+# Mock sunucunun ayakta olup olmadığını kontrol et
+if [ ! -f "./mock_server.pid" ]; then
+  echo "test.sh: Testlerin çalışabilmesi için mock sunucusu çalışıyor olmalı" >&2
+  exit 1
+fi
+
+# Betik dosyasının test işleri için kopyasını oluştur
+sed "s/https\:\/\/mgm.gov.tr/http\:\/\/localhost\:${PORT}/g" < mgm-radar.sh > test-radar.sh
+chmod u+x test-radar.sh
 
 # Test çalıştırıcı
 for fonk in $(declare -F | cut -d' ' -f3 | grep '^test_*'); do
@@ -435,6 +418,9 @@ for fonk in $(declare -F | cut -d' ' -f3 | grep '^test_*'); do
 	[ -e test.log ] && mv "test.log" "${fonk}.log"
 done
 rm -rf test/
+
+# Test için olan betik kopyasını sil
+rm test-radar.sh
 
 # Sonuç
 TEST_SAYISI=$(declare -F | cut -d' ' -f3 | grep -c '^test_*')
