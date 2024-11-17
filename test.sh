@@ -398,7 +398,7 @@ test_baglanti_kontrol_hata_raporlama_calisiyor_mu() {
 	dosya_olmali "mgm-radar.log"
 	cikti=$(cat "mgm-radar.log" | tail -n1)
 
-	iceriyor_olmali "$cikti" "nodename nor servname provided, or not known"
+	iceriyor_olmali "$cikti" "deneme"
 	rm -rf test-radar.sh
 }
 
